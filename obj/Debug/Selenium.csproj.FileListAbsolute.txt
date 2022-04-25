@@ -14,3 +14,7 @@ D:\Programming_study\Selenium\obj\Debug\Selenium.csproj.GenerateResource.cache
 D:\Programming_study\Selenium\obj\Debug\Selenium.csproj.CoreCompileInputs.cache
 D:\Programming_study\Selenium\obj\Debug\Selenium.exe
 D:\Programming_study\Selenium\obj\Debug\Selenium.pdb
+D:\Programming_study\Selenium\bin\Debug\chromedriver.exe
+D:\Programming_study\Selenium\bin\Debug\WebDriver.dll
+D:\Programming_study\Selenium\obj\Debug\Selenium_Content.g.cs
+D:\Programming_study\Selenium\obj\Debug\Selenium.csproj.CopyComplete
