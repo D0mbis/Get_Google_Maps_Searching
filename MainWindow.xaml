@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Selenium"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="200" Width="500">
     <Grid>
         <Border BorderThickness="1" BorderBrush="Black">
             <Grid Background="AliceBlue">
@@ -13,43 +13,23 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-
                 <TextBlock Grid.Row="0" 
-                           Grid.Column="0" 
-                           Text="Input start date" 
+                           Grid.Column="1" 
+                           Text="Дадай посилання для пошуку:" 
                            VerticalAlignment="Center"
-                           Margin="20"
-                           FontSize="14"
+                           HorizontalAlignment="Center"
+                           Margin="20,20,20,0"
+                           FontSize="25"
                            FontFamily="Arial"/>
-                <TextBlock Grid.Row="1" 
-                           Grid.Column="0" 
-                           Text="Input finish date" 
-                           VerticalAlignment="Center"
-                           Margin="20"
-                           FontSize="14"
-                           FontFamily="Arial"/>
-                <TextBlock Grid.Row="2" 
-                           Grid.Column="0" 
-                           Text="value" 
-                           VerticalAlignment="Center"
-                           Margin="20"
-                           FontSize="14"
-                           FontFamily="Arial"/>
-                <DatePicker Name="DateFrome" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"/>
-                <DatePicker Name="DateTo" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"/>
-                <TextBox Name="Value" Grid.Row="2" Grid.Column="1" Height="30"/>
+                <TextBox Name="Value" Grid.Row="1" Grid.Column="1" Height="30"/>
                 <Button x:Name="StartBrn" 
                         Grid.Row="3" Grid.Column="1" 
                         Height="40" 
-                        Content="Start Parser" 
+                        Content="Почати пошук" 
                         FontSize="20"
                         Click="StartBrn_Click"/>
             </Grid>
