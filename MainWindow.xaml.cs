@@ -21,23 +21,26 @@ namespace Selenium
         {
             if (string.IsNullOrEmpty(Value.Text))
             {
-                MessageBox.Show("Будь уважніше, всавив якусь херню! Спробуй спочатку");
+                MessageBox.Show("Будь уважніше, вставив якусь херню! Спробуй спочатку");
                 return;
             }
             //var value = Value.Text;
             else if (Value.Text == "1")
             {
-                IWebDriver driver = new ChromeDriver { Url = @"https://www.google.com/maps/search/%D1%80%D0%B5%D1%81%D1%82%D0%BE%D1%80%D0%B0%D0%BD+%D0%B3%D1%80%D1%83%D0%B7%D0%B8%D1%8F/@47.2232698,39.697817,12z" };
+                IWebDriver driver = new ChromeDriver { Url = @"https://www.google.com/maps/search/%D1%81%D1%82%D1%83%D0%B4%D0%B8%D1%8F+%D0%B4%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD%D0%B0+%D0%B3%D1%80%D1%83%D0%B7%D0%B8%D1%8F/@41.7754706,38.7761714,6z/data=!3m1!4b1" };
 
                 await Task.Delay(1000);
-                var buttonNextPage = driver.FindElement(By.XPath("//button[@id='ppdPk-Ej1Yeb-LgbsSe-tJiF1e']"));
-                if (buttonNextPage != null)
+                var buttonNextPage = driver.FindElement(By.XPath("//button[@id='ppdPk-Ej1Yeb-LgbsSe-tJiF1e'][contains(.,'disabled')]"));
+                var buttonNextPage2 = driver.FindElement(By.XPath("//button[@id='ppdPk-Ej1Yeb-LgbsSe-tJiF1e']"));
+                while (buttonNextPage == null)
                 {
-                    buttonNextPage.Click();
+                        await Task.Delay(3000);
+                        buttonNextPage.Click();
                 }
+                MessageBox.Show("work is done!");
             }
         }
     }
 }
-// html / body / div[3] / div[9] / div[9] / div / div / div[1] / div[2] / div / div[1] / div / div / div[2] / div[2] / div / div[1] / div / button[2]
-//id = "ppdPk-Ej1Yeb-LgbsSe-tJiF1e"
+
+//a[contains(., 'disabled')]
