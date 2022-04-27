@@ -31,8 +31,9 @@ namespace Selenium
 
                 await Task.Delay(1000);
                 var buttonNextPage = driver.FindElement(By.XPath("//button[@id='ppdPk-Ej1Yeb-LgbsSe-tJiF1e']"));
-                if (buttonNextPage != null)
+                while (buttonNextPage != null)
                 {
+                    await Task.Delay(3500);
                     buttonNextPage.Click();
                 }
             }
