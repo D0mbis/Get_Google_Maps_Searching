@@ -1,9 +1,11 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.Events;
 using OpenQA.Selenium.Support.UI;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
-
+using System.Windows.Documents;
 
 namespace Selenium
 {
@@ -26,46 +28,68 @@ namespace Selenium
             }
             else if (Value.Text == "1")
             {
-                IWebDriver driver = new ChromeDriver { Url = @"https://www.google.com/maps/search/park+usa/@48.8069443,-109.7329701,3z/data=!3m1!4b1" };
-
-                await Task.Delay(5000);
-
-                //var ListOfOnePage = driver.FindElement(By.XPath(".//*[contains(@class,'m6QErb DxyBCb kA9KIf dS8AEf ecceSd QjC7t')]")); // hiden class after scroll
-                var ListOfOnePage = driver.FindElements(By.XPath(".//*[contains(@aria-label,'Результаты по запросу')]/div[position()>2]"));
-                if (ListOfOnePage != null)
+                IWebDriver driver = new ChromeDriver { Url = @"https://www.google.com/maps/search/%D0%BA%D0%B0%D1%84%D0%B5+%D0%B2%D0%BE%D0%BB%D0%B3%D0%BE%D0%B4%D0%BE%D0%BD%D1%81%D0%BA/@47.5162181,42.1873579,13z/data=!3m1!4b1" };
+                await Task.Delay(3500);
+                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                var buttonNextPage = driver.FindElement(By.CssSelector("#ppdPk-Ej1Yeb-LgbsSe-tJiF1e"));
+                var buttonNextPageDisable = driver.FindElement(By.CssSelector("#ppdPk-Ej1Yeb-LgbsSe-tJiF1e[disabled]"));
+                while (true)
                 {
+                    await Task.Delay(2000);
+                    var ListOfOnePage = driver.FindElements(By.XPath(".//*[contains(@aria-label,'Результаты по запросу')]/div[position()>2]"));
+                    int counter = 2;
+                    // scrolling to down page
+                    while (counter != 0)
+                    {
+                        js.ExecuteScript("document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollBy(0, 5000);");
+                        await Task.Delay(2000);
+                        var ListOfOnePageAfterScrolling = driver.FindElements(By.XPath(".//*[contains(@aria-label,'Результаты по запросу')]/div[position()>2]"));
+                        if (ListOfOnePageAfterScrolling.Count > ListOfOnePage.Count)
+                        {
+                            ListOfOnePage = ListOfOnePageAfterScrolling;
+                            continue;
+                        }
+                        else if (ListOfOnePageAfterScrolling.Count <= ListOfOnePage.Count)
+                        {
+                            counter--;
+                            continue;
+                        }
+                    }
+                    // output data from ListOfOnePage
+                    string list = null;
                     foreach (var item in ListOfOnePage)
                     {
+                        
                         try
                         {
                             var oneRow = item.FindElement(By.XPath(".//div[@class='qBF1Pd fontHeadlineSmall']"));
                             if (oneRow != null)
                             {
-                                MessageBox.Show(oneRow.Text);
+                                list += "\n" + oneRow.Text;   
                             }
-                         
                         }
                         catch (System.Exception)
                         {
-
                             continue;
                         }
-                        
+                    }
+                    MessageBox.Show(list);
+                    if (buttonNextPage.Displayed)
+                    {
+                        ListOfOnePage = null;
+                        buttonNextPage.Click();
+                    }
+                    else if (buttonNextPageDisable )  //  ДОДЕЛАТЬ УСЛОВИЕ ОБНАРУЖЕНИЯ НЕДОСТУПНОСТИ КНОПКИ disabled
+                    {
+                        driver.Quit();
+                        break;
                     }
                 }
-
-
-                /*var buttonNextPage = driver.FindElement(By.XPath("//button[@id='ppdPk-Ej1Yeb-LgbsSe-tJiF1e']"));
-                bool ok = buttonNextPage.Selected;
-                while (ok)
-                {
-                    await Task.Delay(3500);
-                    buttonNextPage.Click();
-                }
-                driver.Quit();*/
             }
         }
     }
-    // jstcache="185"
-}//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]
- //div[@aria-label ='185'] it work!
+}
+
+//// WORKING SCROLLING
+//document.querySelector('#QA0Szd > div > div > div.w6VYqd > div.bJzME.tTVLSc > div > div.e07Vkf.kA9KIf > div > div > div.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd > div.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollTop = 200;
+//$$('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd')
