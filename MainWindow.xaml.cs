@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using System;
+using OpenQA.Selenium.Support.UI;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -24,23 +24,48 @@ namespace Selenium
                 MessageBox.Show("Будь уважніше, вставив якусь херню! Спробуй спочатку");
                 return;
             }
-            //var value = Value.Text;
             else if (Value.Text == "1")
             {
-                IWebDriver driver = new ChromeDriver { Url = @"https://www.google.com/maps/search/%D1%81%D1%82%D1%83%D0%B4%D0%B8%D1%8F+%D0%B4%D0%B8%D0%B7%D0%B0%D0%B9%D0%BD%D0%B0+%D0%B3%D1%80%D1%83%D0%B7%D0%B8%D1%8F/@41.7754706,38.7761714,6z/data=!3m1!4b1" };
+                IWebDriver driver = new ChromeDriver { Url = @"https://www.google.com/maps/search/park+usa/@48.8069443,-109.7329701,3z/data=!3m1!4b1" };
 
-                await Task.Delay(1000);
-                var buttonNextPage = driver.FindElement(By.XPath("//button[@id='ppdPk-Ej1Yeb-LgbsSe-tJiF1e'][contains(.,'disabled')]"));
-                var buttonNextPage2 = driver.FindElement(By.XPath("//button[@id='ppdPk-Ej1Yeb-LgbsSe-tJiF1e']"));
-                while (buttonNextPage == null)
+                await Task.Delay(5000);
+
+                //var ListOfOnePage = driver.FindElement(By.XPath(".//*[contains(@class,'m6QErb DxyBCb kA9KIf dS8AEf ecceSd QjC7t')]")); // hiden class after scroll
+                var ListOfOnePage = driver.FindElements(By.XPath(".//*[contains(@aria-label,'Результаты по запросу')]/div[position()>2]"));
+                if (ListOfOnePage != null)
                 {
-                        await Task.Delay(3000);
-                        buttonNextPage.Click();
+                    foreach (var item in ListOfOnePage)
+                    {
+                        try
+                        {
+                            var oneRow = item.FindElement(By.XPath(".//div[@class='qBF1Pd fontHeadlineSmall']"));
+                            if (oneRow != null)
+                            {
+                                MessageBox.Show(oneRow.Text);
+                            }
+                         
+                        }
+                        catch (System.Exception)
+                        {
+
+                            continue;
+                        }
+                        
+                    }
                 }
-                MessageBox.Show("work is done!");
+
+
+                /*var buttonNextPage = driver.FindElement(By.XPath("//button[@id='ppdPk-Ej1Yeb-LgbsSe-tJiF1e']"));
+                bool ok = buttonNextPage.Selected;
+                while (ok)
+                {
+                    await Task.Delay(3500);
+                    buttonNextPage.Click();
+                }
+                driver.Quit();*/
             }
         }
     }
-}
-
-//a[contains(., 'disabled')]
+    // jstcache="185"
+}//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]
+ //div[@aria-label ='185'] it work!
