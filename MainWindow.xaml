@@ -13,6 +13,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -26,6 +27,9 @@
                            FontSize="25"
                            FontFamily="Arial"/>
                 <TextBox Name="Value" Grid.Row="1" Grid.Column="1" Height="30"/>
+                <RadioButton x:Name="ScrollingDelay" Content="2 cекунди" Grid.Row="2" Grid.Column="1"  HorizontalContentAlignment="Left" Margin="15"/>
+                <RadioButton x:Name="ScrollingDelay1" Content="1.5 cекунди" Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Center" Margin="15"/>
+                <RadioButton x:Name="ScrollingDelay2" Content="1 cекунда" Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Right" Margin="15"/>
                 <Button x:Name="StartBrn" 
                         Grid.Row="3" Grid.Column="1" 
                         Height="40" 
