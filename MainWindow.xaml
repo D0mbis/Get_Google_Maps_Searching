@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Selenium"
         mc:Ignorable="d"
-        Title="MainWindow" Height="200" Width="500">
+        Title="MainWindow" Height="230" Width="500">
     <Grid>
         <Border BorderThickness="1" BorderBrush="Black">
             <Grid Background="AliceBlue">
                 <Grid.RowDefinitions>
+                    <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -26,6 +27,9 @@
                            FontSize="25"
                            FontFamily="Arial"/>
                 <TextBox Name="Value" Grid.Row="1" Grid.Column="1" Height="30"/>
+                <RadioButton x:Name="ScrollingDelay" Content="2 cекунди" Grid.Row="2" Grid.Column="1"  HorizontalContentAlignment="Left" Margin="15"/>
+                <RadioButton x:Name="ScrollingDelay1" Content="1.5 cекунди" Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Center" Margin="15"/>
+                <RadioButton x:Name="ScrollingDelay2" Content="1 cекунда" Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Right" Margin="15"/>
                 <Button x:Name="StartBrn" 
                         Grid.Row="3" Grid.Column="1" 
                         Height="40" 
