@@ -23,12 +23,12 @@ namespace Selenium
                 MessageBox.Show("Відсутнє посилання для пошуку! Спробуй спочатку");
                 return;
             }
-            else if (!Value.Text.Contains("https://www.google.com/maps/search/"))
+            else if (!Value.Text.Contains("www.google"))
             {
                 MessageBox.Show("Посилання має бути з Google maps! Спробуй спочатку");
                 return;
             }
-            else if (Value.Text.Contains("https://www.google.com/maps/search/"))
+            else if (Value.Text.Contains("www.google"))
             {
 
                 if (ScrollingDelay.IsChecked == true)
