@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace Selenium
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : System.Windows.Window
     {
         public MainWindow()
         {
@@ -17,6 +17,7 @@ namespace Selenium
 
         private async void StartBrn_Click(object sender, RoutedEventArgs e)
         {
+
             bool avalible = false;
             int scrollingDelay = 0, value = 2000, value1 = 1500, value2 = 1000;
             // checking true user input
@@ -62,10 +63,10 @@ namespace Selenium
                 await Task.Delay(3500);
                 IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
                 var buttonNextPage = driver.FindElement(By.CssSelector("#ppdPk-Ej1Yeb-LgbsSe-tJiF1e"));
-                Dictionary<string, List<string>> list = new Dictionary<string, List<string>>();
+                Dictionary<string, List<string>> listOfResults = new Dictionary<string, List<string>>();
                 int counterOfResults = 0;
-                string path = @"D:\\Programming_study\\Selenium\\Result\\list.xls";
-                File.Delete(path);
+                
+                //File.Delete(path);
                 while (true)
                 {
                     await Task.Delay(2000);
@@ -110,8 +111,7 @@ namespace Selenium
                                             contentOneRow.Add(item2.Text.ToString());
                                         }
                                 }
-                                list[nameOneRow.Text] = contentOneRow;
-                                //list.Add(nameOneRow.Text, contentOneRow);
+                                listOfResults[nameOneRow.Text] = contentOneRow;
                                 counterOfResults++;
                             }
                         }
@@ -120,21 +120,14 @@ namespace Selenium
                             continue;
                         }
                     }
-                    
+
                     // output data from ListOfOnePage
                     try
                     {
-                        using (StreamWriter stream = new StreamWriter(path, true))
+                        using (ExcelMethods excelMethods = new ExcelMethods())
                         {
-                            foreach (var item in list)
-                            {
-                                stream.Write(item.Key);
-                                foreach (var item2 in item.Value)
-                                {
-                                    stream.Write(item2);
-                                }
-                                stream.WriteLine();
-                            }
+                            excelMethods.Open();
+                            excelMethods.ToExcel(int row, ); // продумать какие параметры передавать в метод 
                         }
                         /* foreach (var item in list)
                          {
@@ -147,7 +140,7 @@ namespace Selenium
                     }
                     catch
                     {
-                        MessageBox.Show($"Программа завершила работу.\n {list} \n Всего найдено результатов: {counterOfResults}");
+                        MessageBox.Show($"Программа завершила работу.\n {listOfResults} \n Всего найдено результатов: {counterOfResults}");
                         //MessageBox.Show($"Программа завершила работу.\n {list} \n Всего найдено результатов: {counterOfMarks}");
 
                         driver.Quit();
