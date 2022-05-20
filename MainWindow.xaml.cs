@@ -65,7 +65,7 @@ namespace Selenium
                 var buttonNextPage = driver.FindElement(By.CssSelector("#ppdPk-Ej1Yeb-LgbsSe-tJiF1e"));
                 Dictionary<string, List<string>> listOfResults = new Dictionary<string, List<string>>();
                 int counterOfResults = 0;
-                
+
                 //File.Delete(path);
                 while (true)
                 {
@@ -127,7 +127,22 @@ namespace Selenium
                         using (ExcelMethods excelMethods = new ExcelMethods())
                         {
                             excelMethods.Open();
-                            excelMethods.ToExcel(int row, ); // продумать какие параметры передавать в метод 
+                            int rowNumber = 2, columnNumber;
+                            string data;
+                            foreach (var item in listOfResults)
+                            {
+                                columnNumber = 1;
+                                data = item.Key;
+                                excelMethods.ToExcel(rowNumber, columnNumber, data);
+                                foreach (var item2 in item.Value)
+                                {
+                                    columnNumber++;
+                                    data = item2;
+                                    excelMethods.ToExcel(rowNumber, columnNumber, data);
+                                }
+                                rowNumber++;
+                            }
+                            excelMethods.Save();
                         }
                         /* foreach (var item in list)
                          {

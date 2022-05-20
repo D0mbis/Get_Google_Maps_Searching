@@ -27,7 +27,8 @@ namespace Selenium
                 if (File.Exists(path))
                 {
                     _workbook = _excel.Workbooks.Open(path);
-                    _workbook.ActiveSheet.Clear();
+                    //_workbook.ActiveSheet.Cells.ClearContents(path);
+                    //_workbook.Sheets.Delete(); ??
                     //File.Delete(path);
                 }
                 else
@@ -42,13 +43,25 @@ namespace Selenium
             }
         }
 
-        internal void ToExcel(int count, Dictionary<string, List<string>>.KeyCollection keys, Dictionary<string, List<string>>.ValueCollection values)
+        internal void ToExcel(int row, int column, object data)
         {
+            _workbook.ActiveSheet.Cells[row, column] = data;
+        }
 
+        internal void Save()
+        {
+            _workbook.Save();
         }
         public void Dispose()
         {
-            throw new NotImplementedException();
+            try
+            {
+                _workbook.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Не вдається завершити роботу Excel!");
+            }
         }
     }
 }
