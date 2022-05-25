@@ -13,6 +13,7 @@ namespace Selenium
         public MainWindow()
         {
             InitializeComponent();
+            //using (ExcelMethods excelMethods = new ExcelMethods()) { excelMethods.Open(); }
         }
 
         private async void StartBrn_Click(object sender, RoutedEventArgs e)
@@ -66,102 +67,100 @@ namespace Selenium
                 Dictionary<string, List<string>> listOfResults = new Dictionary<string, List<string>>();
                 int counterOfResults = 0;
 
-                //File.Delete(path);
+                // added to Dictionary ListOfOnePage
                 while (true)
                 {
                     await Task.Delay(2000);
                     var ListOfOnePage = driver.FindElements(By.XPath(".//*[@aria-label and @class='m6QErb DxyBCb kA9KIf dS8AEf ecceSd' or @class='m6QErb DxyBCb kA9KIf dS8AEf ecceSd QjC7t']/div[position()>2]"));
-                    int counter = 2;
-
-                    // scrolling to down page
-                    while (counter != 0)
-                    {
-
-                        js.ExecuteScript("document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollBy(0, 5000);");
-                        //await Task.Delay(scrollingDelay);
-                        Thread.Sleep(scrollingDelay);
-                        var ListOfOnePageAfterScrolling = driver.FindElements(By.XPath(".//*[@aria-label and @class='m6QErb DxyBCb kA9KIf dS8AEf ecceSd' or @class='m6QErb DxyBCb kA9KIf dS8AEf ecceSd QjC7t']/div"));
-                        if (ListOfOnePageAfterScrolling.Count > ListOfOnePage.Count)
-                        {
-                            ListOfOnePage = ListOfOnePageAfterScrolling;
-                            continue;
-                        }
-                        else if (ListOfOnePageAfterScrolling.Count <= ListOfOnePage.Count)
-                        {
-                            counter--;
-                            continue;
-                        }
-                    }
-
-                    // save data from ListOfOnePage
-                    foreach (var item in ListOfOnePage)
-                    {
-                        try
-                        {
-                            var nameOneRow = item.FindElement(By.XPath(".//div[@class='qBF1Pd fontHeadlineSmall']"));
-                            if (nameOneRow != null)
-                            {
-                                var someContent = item.FindElements(By.XPath(".//*[@class='W4Efsd' and @jsinstance]"));
-                                List<string> contentOneRow = new List<string>();
-                                if (someContent != null)
-                                {
-                                    foreach (var item2 in someContent)
-                                        if (item2.Text != null)
-                                        {
-                                            contentOneRow.Add(item2.Text.ToString());
-                                        }
-                                }
-                                listOfResults[nameOneRow.Text] = contentOneRow;
-                                counterOfResults++;
-                            }
-                        }
-                        catch (System.Exception)
-                        {
-                            continue;
-                        }
-                    }
-
-                    // output data from ListOfOnePage
                     try
                     {
-                        using (ExcelMethods excelMethods = new ExcelMethods())
+                        // scrolling to down page
+                        int counter = 2;
+                        while (counter != 0)
                         {
-                            excelMethods.Open();
-                            int rowNumber = 2, columnNumber;
-                            string data;
-                            foreach (var item in listOfResults)
-                            {
-                                columnNumber = 1;
-                                data = item.Key;
-                                excelMethods.ToExcel(rowNumber, columnNumber, data);
-                                foreach (var item2 in item.Value)
-                                {
-                                    columnNumber++;
-                                    data = item2;
-                                    excelMethods.ToExcel(rowNumber, columnNumber, data);
-                                }
-                                rowNumber++;
-                            }
-                            excelMethods.Save();
-                        }
-                        /* foreach (var item in list)
-                         {
-                             System.IO.File.AppendAllText("D:\\Programming_study\\Selenium\\Result\\list.xls", item.Key + item.Value + "\n"); //Либо найти как открывать файл изменять, сохранять и закрывать либо попробовать dictionary
-                         }*/
 
-                        driver.Quit();
-                        break;
-                        //buttonNextPage.Click();
+                            js.ExecuteScript("document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollBy(0, 5000);");
+                            //await Task.Delay(scrollingDelay);
+                            Thread.Sleep(scrollingDelay);
+                            var ListOfOnePageAfterScrolling = driver.FindElements(By.XPath(".//*[@aria-label and @class='m6QErb DxyBCb kA9KIf dS8AEf ecceSd' or @class='m6QErb DxyBCb kA9KIf dS8AEf ecceSd QjC7t']/div"));
+                            if (ListOfOnePageAfterScrolling.Count > ListOfOnePage.Count)
+                            {
+                                ListOfOnePage = ListOfOnePageAfterScrolling;
+                                continue;
+                            }
+                            else if (ListOfOnePageAfterScrolling.Count <= ListOfOnePage.Count)
+                            {
+                                counter--;
+                                continue;
+                            }
+                        }
+                        // save data to Dictionary ListOfOnePage
+                        foreach (var item in ListOfOnePage)
+                        {
+                            try
+                            {
+                                var nameOneRow = item.FindElement(By.XPath(".//div[@class='qBF1Pd fontHeadlineSmall']"));
+                                if (nameOneRow != null)
+                                {
+                                    var someContent = item.FindElements(By.XPath(".//*[@class='W4Efsd' and @jsinstance]"));
+                                    List<string> contentOneRow = new List<string>();
+                                    if (someContent != null)
+                                    {
+                                        foreach (var item2 in someContent)
+                                            if (item2.Text != null)
+                                            {
+                                                contentOneRow.Add(item2.Text.ToString());
+                                            }
+                                    }
+                                    listOfResults[nameOneRow.Text] = contentOneRow;
+                                    counterOfResults++;
+                                }
+                            }
+                            catch (System.Exception)
+                            {
+                                continue;
+                            }
+                        }
+                        buttonNextPage.Click();
                     }
                     catch
                     {
-                        MessageBox.Show($"Программа завершила работу.\n {listOfResults} \n Всего найдено результатов: {counterOfResults}");
-                        //MessageBox.Show($"Программа завершила работу.\n {list} \n Всего найдено результатов: {counterOfMarks}");
-
-                        driver.Quit();
                         break;
                     }
                 }
+
+                // save data from ListOfOnePage to Excel
+                try
+                {
+                    using (ExcelMethods excelMethods = new ExcelMethods())
+                    {
+                        excelMethods.Open();
+                        int rowNumber = 2, columnNumber;
+                        string data;
+                        foreach (var item in listOfResults)
+                        {
+                            columnNumber = 1;
+                            data = item.Key;
+                            excelMethods.ToExcel(rowNumber, columnNumber, data);
+                            foreach (var item2 in item.Value)
+                            {
+                                columnNumber++;
+                                data = item2;
+                                excelMethods.ToExcel(rowNumber, columnNumber, data);
+                            }
+                            rowNumber++;
+                        }
+                        //excelMethods.Dispose();
+                    }
+                    driver.Quit();
+                    MessageBox.Show($"Программа успішно завершила работу. \n Знайдено результатів: {counterOfResults}");
+                }
+                catch
+                {
+                    MessageBox.Show($"Программа завершила работу некоректно.");
+                    driver.Quit();
+                }
+
             }
         }
     }

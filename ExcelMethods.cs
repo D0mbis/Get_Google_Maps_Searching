@@ -11,10 +11,8 @@ namespace Selenium
     internal class ExcelMethods : IDisposable
     {
         private Excel.Application _excel;
-        private string path = @"D:\\Programming_study\\Selenium\\Result\\list.xls";
+        private string path = @"D:\\Programming_study\\Selenium\\Result\\List.xls";
         private Excel.Workbook _workbook;
-        private string needSave;
-
         public ExcelMethods()
         {
             _excel = new Excel.Application();
@@ -27,18 +25,19 @@ namespace Selenium
                 if (File.Exists(path))
                 {
                     _workbook = _excel.Workbooks.Open(path);
-                    //_workbook.ActiveSheet.Cells.ClearContents(path);
-                    //_workbook.Sheets.Delete(); ??
-                    //File.Delete(path);
+                    _workbook.Worksheets[1].Cells.ClearContents();
+                    _workbook.ActiveSheet.Name = "Список результатів";
                 }
                 else
                 {
-                    _workbook = _excel.Workbooks.Add(path);
-                    needSave = path;
+                    using (FileStream fs = new FileStream(path, FileMode.Create)) { }
+                    _workbook = _excel.Workbooks.Open(path);
+                    _workbook.ActiveSheet.Name = "Список результатів";
                 }
             }
             catch
             {
+                Dispose();
                 MessageBox.Show("Не вдалось запустити Excel, можливо версія несумісна");
             }
         }
@@ -47,16 +46,15 @@ namespace Selenium
         {
             _workbook.ActiveSheet.Cells[row, column] = data;
         }
-
-        internal void Save()
-        {
-            _workbook.Save();
-        }
         public void Dispose()
         {
             try
             {
+                //_workbook.SaveAs(FileFormat: XlFileFormat.xlAddIn8);
+                _workbook.Save();
                 _workbook.Close();
+                _excel.Quit();
+                MessageBox.Show("Excel завершила свою роботу!");
             }
             catch
             {
