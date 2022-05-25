@@ -19,3 +19,4 @@ D:\Programming_study\Selenium\bin\Debug\WebDriver.dll
 D:\Programming_study\Selenium\obj\Debug\Selenium_Content.g.cs
 D:\Programming_study\Selenium\obj\Debug\Selenium.csproj.CopyComplete
 D:\Programming_study\Selenium\bin\Debug\WebDriver.Support.dll
+D:\Programming_study\Selenium\obj\Debug\Selenium.csproj.ResolveComReference.cache
