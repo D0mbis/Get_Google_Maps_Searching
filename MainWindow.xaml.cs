@@ -1,14 +1,13 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace Selenium
 {
-    public partial class MainWindow : System.Windows.Window
+    public partial class MainWindow : Window
     {
         public MainWindow()
         {
@@ -78,7 +77,6 @@ namespace Selenium
                         int counter = 2;
                         while (counter != 0)
                         {
-
                             js.ExecuteScript("document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollBy(0, 5000);");
                             //await Task.Delay(scrollingDelay);
                             Thread.Sleep(scrollingDelay);
@@ -102,14 +100,19 @@ namespace Selenium
                                 var nameOneRow = item.FindElement(By.XPath(".//div[@class='qBF1Pd fontHeadlineSmall']"));
                                 if (nameOneRow != null)
                                 {
-                                    var someContent = item.FindElements(By.XPath(".//*[@class='W4Efsd' and @jsinstance]"));
+                                    var someContent = item.FindElements(By.XPath(".//*[@class='W4Efsd' and @jsinstance]//span"));
+                                    var hyphen = item.FindElement(By.XPath(".//*[@class='W4Efsd' and @jsinstance]//span[@aria-hidden]")).ToString();
                                     List<string> contentOneRow = new List<string>();
                                     if (someContent != null)
                                     {
                                         foreach (var item2 in someContent)
                                             if (item2.Text != null)
                                             {
-                                                contentOneRow.Add(item2.Text.ToString());
+                                                if (!contentOneRow.Contains($"{item2.Text}") && !item2.Text.ToString().Contains($"·") && !string.IsNullOrEmpty(item2.Text))
+                                                {
+                                                    contentOneRow.Add(item2.Text.ToString());
+                                                }
+                                                continue;
                                             }
                                     }
                                     listOfResults[nameOneRow.Text] = contentOneRow;
@@ -121,7 +124,8 @@ namespace Selenium
                                 continue;
                             }
                         }
-                        buttonNextPage.Click();
+                        break;
+                        //buttonNextPage.Click();
                     }
                     catch
                     {
@@ -160,7 +164,6 @@ namespace Selenium
                     MessageBox.Show($"Программа завершила работу некоректно.");
                     driver.Quit();
                 }
-
             }
         }
     }
