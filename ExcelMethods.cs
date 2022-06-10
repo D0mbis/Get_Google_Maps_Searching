@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.IO;
 using System.Windows;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -7,35 +8,45 @@ namespace Selenium
 {
     internal class ExcelMethods : IDisposable
     {
-        private Excel.Application _excel;
-        private string path = @"D:\\Programming_study\\Selenium\\Result\\List.xls";
-        private Excel.Workbook _workbook;
+        private Excel.Application _excel = null;
+        private Excel.Workbook _workbook = null;
+        private Excel.Worksheet _sheet = null;
+        private string path = null;
         public ExcelMethods()
         {
             _excel = new Excel.Application();
         }
+        public void SaveAs()
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "Книга Excel 97-2003 (*.xls) | *.xls";
+            if (saveDialog.ShowDialog() == true)
+            {
+                path = saveDialog.FileName;
+                //_workbook.SaveAs(path);
+            }
+        }
 
         internal void Open()
         {
-            try
+            if (path != null)
             {
-                if (File.Exists(path))
-                {
-                    _workbook = _excel.Workbooks.Open(path);
-                    _workbook.Worksheets[1].Cells.ClearContents();
-                    _workbook.ActiveSheet.Name = "Список результатів";
-                }
-                else
-                {
-                    using (FileStream fs = new FileStream(path, FileMode.Create)) { }
-                    _workbook = _excel.Workbooks.Open(path);
-                    _workbook.ActiveSheet.Name = "Список результатів";
-                }
+                _workbook = _excel.Workbooks.Open(path);
+                _workbook.Worksheets[1].Cells.ClearContents();
             }
-            catch
+            else
             {
-                Dispose();
-                MessageBox.Show("Не вдалось запустити Excel, можливо версія несумісна");
+                try
+                {
+                    _workbook = _excel.Workbooks.Add();
+                    _sheet = _workbook.Sheets.Add();
+                    _sheet.Name = "Results List";
+                }
+                catch
+                {
+                    Dispose();
+                    MessageBox.Show("Excel does not start, the version may be incompatible");
+                }
             }
         }
 
@@ -43,20 +54,34 @@ namespace Selenium
         {
             _workbook.ActiveSheet.Cells[row, column] = data;
         }
-        public void Dispose()
+
+        internal void Save()
         {
             try
             {
-                //_workbook.SaveAs(FileFormat: XlFileFormat.xlAddIn8);
-                _workbook.Save();
+                _workbook.SaveAs(path);
                 _workbook.Close();
                 _excel.Quit();
-                MessageBox.Show("Excel завершила свою роботу!");
+                MessageBox.Show("Results was saved!");
             }
             catch
             {
-                MessageBox.Show("Не вдається завершити роботу Excel!");
+                MessageBox.Show("You need to set the path to the file with the results!");
+                SaveAs();
+                if (path != null)
+                {
+                    _workbook.SaveAs(path);
+                    _workbook.Close();
+                    _excel.Quit();
+                    MessageBox.Show("Results was saved!");
+                }
+                else
+                    MessageBox.Show("Excel don`t finished work!");
             }
+        }
+        public void Dispose()
+        {
+
         }
     }
 }
