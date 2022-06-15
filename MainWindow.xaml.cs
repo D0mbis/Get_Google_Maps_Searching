@@ -1,7 +1,7 @@
-﻿using Microsoft.Win32;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +13,7 @@ namespace Selenium
         public MainWindow()
         {
             InitializeComponent();
+            using (StreamReader stream = new StreamReader("path.txt")) { pathValue.Text = stream.ReadToEnd(); }
         }
 
         private async void StartBrn_Click(object sender, RoutedEventArgs e)
@@ -23,17 +24,17 @@ namespace Selenium
             // checking true user input
             {
                 int value = 2000, value1 = 1500, value2 = 1000;
-                if (string.IsNullOrEmpty(Value.Text))
+                if (string.IsNullOrEmpty(linkValue.Text))
                 {
                     MessageBox.Show("You need input link to search.");
                     return;
                 }
-                else if (!Value.Text.Contains("www.google"))
+                else if (!linkValue.Text.Contains("www.google"))
                 {
                     MessageBox.Show("Link must contain 'www.google.com/maps/' \n Try again.");
                     return;
                 }
-                else if (Value.Text.Contains("www.google"))
+                else if (linkValue.Text.Contains("www.google"))
                 {
 
                     if (ScrollingDelay.IsChecked == true)
@@ -59,12 +60,12 @@ namespace Selenium
                     }
                 }
             }
-
+            // logic of program
             if (radioBtnIsChecked)
             {
                 try
                 {
-                    IWebDriver driver = new ChromeDriver { Url = Value.Text };
+                    IWebDriver driver = new ChromeDriver { Url = linkValue.Text };
                     await Task.Delay(3500);
                     IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
                     var buttonNextPage = driver.FindElement(By.CssSelector("#ppdPk-Ej1Yeb-LgbsSe-tJiF1e"));
@@ -129,7 +130,8 @@ namespace Selenium
                                     continue;
                                 }
                             }
-                            buttonNextPage.Click();
+                            break;
+                           // buttonNextPage.Click();
                         }
                         catch
                         {
@@ -158,7 +160,7 @@ namespace Selenium
                                 }
                                 rowNumber++;
                             }
-                            excelMethods.Save();
+                            pathValue.Text = excelMethods.Save();
                         }
                         driver.Quit();
                         MessageBox.Show($"The program successfully finished work. \n Results were found: {counterOfResults}");
@@ -178,7 +180,17 @@ namespace Selenium
 
         private void OpenDialoSaveAsgBtn(object sender, RoutedEventArgs e)
         {
-            using (ExcelMethods excelMethods = new ExcelMethods()) { excelMethods.SaveAs(); }
+            using (ExcelMethods excelMethods = new ExcelMethods()) { pathValue.Text = excelMethods.SaveNewFile(); }
         }
     }
 }
+
+   /* 
+       1. Correctly seve file
+       2. Open every item of ListOfOnePage
+       3. Save links and telephone numbers
+       4. Go on every link and close (frome excel file or from listOfResult)
+       5. Search contacts and save to Excel
+       6. Hide program work
+       7. Fix bugs
+   */

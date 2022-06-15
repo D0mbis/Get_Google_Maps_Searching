@@ -11,25 +11,28 @@ namespace Selenium
         private Excel.Application _excel = null;
         private Excel.Workbook _workbook = null;
         private Excel.Worksheet _sheet = null;
-        private string path = null;
+        private string path;
         public ExcelMethods()
         {
             _excel = new Excel.Application();
         }
-        public void SaveAs()
+
+
+        public string SaveNewFile()
         {
             SaveFileDialog saveDialog = new SaveFileDialog();
             saveDialog.Filter = "Книга Excel 97-2003 (*.xls) | *.xls";
             if (saveDialog.ShowDialog() == true)
             {
-                path = saveDialog.FileName;
-                //_workbook.SaveAs(path);
+                path = saveDialog.FileName.ToString();
+
             }
+            return path;
         }
 
         internal void Open()
         {
-            if (path != null)
+            if (File.Exists(path))
             {
                 _workbook = _excel.Workbooks.Open(path);
                 _workbook.Worksheets[1].Cells.ClearContents();
@@ -55,29 +58,44 @@ namespace Selenium
             _workbook.ActiveSheet.Cells[row, column] = data;
         }
 
-        internal void Save()
+        public string Save()
         {
-            try
+            using (StreamReader stream = new StreamReader("path.txt")) { path = stream.ReadToEnd(); }
+            if (File.Exists(path))
             {
                 _workbook.SaveAs(path);
                 _workbook.Close();
                 _excel.Quit();
                 MessageBox.Show("Results was saved!");
             }
-            catch
+            else
             {
                 MessageBox.Show("You need to set the path to the file with the results!");
-                SaveAs();
-                if (path != null)
+                while (true)
                 {
-                    _workbook.SaveAs(path);
-                    _workbook.Close();
-                    _excel.Quit();
-                    MessageBox.Show("Results was saved!");
+                    try
+                    {
+                        _workbook.SaveAs(path);
+                        break;
+                    }
+                    catch
+                    {
+                        SaveNewFile();
+                    }
                 }
-                else
-                    MessageBox.Show("Excel don`t finished work!");
+                using (StreamWriter stream = new StreamWriter("path.txt")) { stream.Write(path); }
+                MessageBox.Show("Results was saved!");
             }
+            try
+            {
+                _workbook.Close();
+                _excel.Quit();
+            }
+            catch
+            {
+                MessageBox.Show("Excel don`t finished work!");
+            }
+            return path;
         }
         public void Dispose()
         {
