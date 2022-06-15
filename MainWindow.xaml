@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Selenium"
         mc:Ignorable="d"
-        Title="MainWindow" Height="270" Width="500">
+        Title="MainWindow" Height="300" Width="510" ResizeMode="NoResize">
     <Grid>
         <Border BorderThickness="1" BorderBrush="Black">
-            <Grid Background="#FF3380CA">
+            <Grid Background="#FF0777C0">
                 <Grid.RowDefinitions>
+                    <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -23,25 +24,57 @@
                            Text="Дадай посилання для пошуку:" 
                            VerticalAlignment="Center"
                            HorizontalAlignment="Center"
-                           Margin="20,20,20,0"
                            FontSize="25"
                            FontFamily="Arial"/>
-                <TextBox Name="Value" Background="#FFBDD5EA" Grid.Row="1" Grid.Column="1" Height="30" Margin="20,0">
+                <TextBlock Grid.Row="2" 
+                           Text="Обери шлях до файлу з результатами:" 
+                           FontSize="16"
+                           FontFamily="Arial"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Center"
+                           />
+                <TextBlock Grid.Row="3" 
+                           Text="Обери швидкість пошуку:" 
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           FontSize="14"
+                           FontFamily="Arial"
+                           Margin="0,0,0,10"
+                           Foreground="White"
+                           />
+                <TextBox Name="linkValue" Background="#FFBDD5EA" Grid.Row="1" Height="27"
+                         Margin="20,0,20,0"
+                         VerticalAlignment ="Top">
                     <TextBox.Effect>
                         <DropShadowEffect/>
                     </TextBox.Effect>
                 </TextBox>
-                <RadioButton x:Name="ScrollingDelay" Content="2 cекунди" Grid.Row="2" Grid.Column="1"  HorizontalContentAlignment="Left" Margin="15"/>
-                <RadioButton x:Name="ScrollingDelay1" Content="1.5 cекунди" Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Center" Margin="15"/>
-                <RadioButton x:Name="ScrollingDelay2" Content="1 cекунда" Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Right" Margin="15"/>
+                <TextBox Name="pathValue" 
+                         DataContext="path"
+                         Background="#FFBDD5EA" Grid.Row="2" Height="27"
+                         VerticalAlignment="Bottom"
+                         Margin="20,0,60,0"
+                         >
+                    <TextBox.Effect>
+                        <DropShadowEffect/>
+                    </TextBox.Effect>
+                </TextBox>
+
+
+                <RadioButton x:Name="ScrollingDelay" Content="2 cекунди" VerticalContentAlignment="Center" Grid.Row="3"  HorizontalContentAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,0"/>
+                <RadioButton x:Name="ScrollingDelay1" Content="1.5 cекунди" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1"  HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                <RadioButton x:Name="ScrollingDelay2" Content="1 cекунда" VerticalContentAlignment="Center" Grid.Row="3"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,0"/>
                 <Button x:Name="StartBrn" 
                         Background="#FF3E5886"
                         Foreground="White"
-                        Grid.Row="2" 
+                        Grid.Row="4" 
+                        VerticalAlignment="Bottom"
                         Height="40" 
-                        Content="Почати пошук" 
-                        FontSize="20"
-                        Click="StartBrn_Click" BorderBrush="#FF121212" Margin="261,53,20,13" Panel.ZIndex="2" FontWeight="Bold" Cursor="Hand" Grid.RowSpan="2">
+                        Content="Почати пошук🔍"
+                        VerticalContentAlignment="Center"
+                        FontSize="25"
+                        Click="StartBrn_Click" BorderBrush="#FF121212" Margin="20,0,20,10" FontWeight="Bold" Cursor="Hand">
                     <Button.FocusVisualStyle>
                         <Style/>
                     </Button.FocusVisualStyle>
@@ -50,13 +83,14 @@
                     </Button.Effect>
                 </Button>
                 <Button x:Name="OpenDialog" 
-                    Background="#FF87A5DA"
-                    Foreground="#FF0A0A0A"
+                    Background="#FF3E5886"
+                    Foreground="White"
                     Grid.Row="2" 
-                    Height="40" 
-                    Content="Обрати шлях до файлу з результатами" 
-                    FontSize="10"
-                    Click="OpenDialoSaveAsgBtn" BorderBrush="#FF121212" Margin="20,53,249,13" FontWeight="Bold"  Grid.RowSpan="2">
+                    Content="🖿"
+                    VerticalContentAlignment="Center"
+                    FontSize="20"
+                    Cursor="Hand"
+                    Click="OpenDialoSaveAsgBtn" BorderBrush="#FF121212" Height="27" VerticalAlignment="Bottom"  HorizontalAlignment="Right" Margin="0,0,20,0" Width="30">
                     <Button.FocusVisualStyle>
                         <Style/>
                     </Button.FocusVisualStyle>
