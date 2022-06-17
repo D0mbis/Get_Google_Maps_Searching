@@ -74,7 +74,7 @@
                         Content="Почати пошук🔍"
                         VerticalContentAlignment="Center"
                         FontSize="25"
-                        Click="StartBrn_Click" BorderBrush="#FF121212" Margin="20,0,20,10" FontWeight="Bold" Cursor="SizeAll">
+                        Click="StartBrn_Click" BorderBrush="#FF121212" Margin="20,0,20,10" FontWeight="Bold" Cursor="Hand">
                     <Button.FocusVisualStyle>
                         <Style/>
                     </Button.FocusVisualStyle>

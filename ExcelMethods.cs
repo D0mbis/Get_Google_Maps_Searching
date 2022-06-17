@@ -12,20 +12,20 @@ namespace Selenium
         private Excel.Workbook _workbook = null;
         private Excel.Worksheet _sheet = null;
         private string path;
+
         public ExcelMethods()
         {
             _excel = new Excel.Application();
+            using (StreamReader stream = new StreamReader("path.txt")) { path = stream.ReadToEnd(); }
         }
-
 
         public string SaveNewFile()
         {
             SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "Книга Excel 97-2003 (*.xls) | *.xls";
+            saveDialog.Filter = "Книга Excel 97-2003 (*.xlsx) | *.xlsx";
             if (saveDialog.ShowDialog() == true)
             {
                 path = saveDialog.FileName.ToString();
-
             }
             return path;
         }
@@ -60,19 +60,31 @@ namespace Selenium
 
         public string Save()
         {
-            using (StreamReader stream = new StreamReader("path.txt")) { path = stream.ReadToEnd(); }
-            if (File.Exists(path))
+            //using (StreamReader stream = new StreamReader("path.txt")) { path = stream.ReadToEnd(); }
+            try
             {
-                _workbook.SaveAs(path);
-                _workbook.Close();
-                _excel.Quit();
-                MessageBox.Show("Results was saved!");
-            }
-            else
-            {
-                MessageBox.Show("You need to set the path to the file with the results!");
-                while (true)
+                if (File.Exists(path))
                 {
+                    _workbook.SaveAs(path);
+                    using (StreamWriter stream = new StreamWriter("path.txt")) { stream.Write(path); }
+                    MessageBox.Show("Results was saved!");
+                }
+                else
+                {
+                    MessageBox.Show("Save error! You need to correctly set the path to save the file. Try again");
+                    SaveNewFile();
+                    _workbook.SaveAs(path);
+                    using (StreamWriter stream = new StreamWriter("path.txt")) { stream.Write(path); }
+                    MessageBox.Show("Results was saved!");
+                }
+            }
+            catch
+            {
+                //MessageBox.Show("You need to set the path to the file with the results!");
+                do
+                {
+                    MessageBox.Show("Save error! You need to correctly set the path to save the file. Try again");
+                    SaveNewFile();
                     try
                     {
                         _workbook.SaveAs(path);
@@ -80,26 +92,25 @@ namespace Selenium
                     }
                     catch
                     {
-                        SaveNewFile();
                     }
                 }
+                while (true);
                 using (StreamWriter stream = new StreamWriter("path.txt")) { stream.Write(path); }
                 MessageBox.Show("Results was saved!");
             }
-            try
-            {
-                _workbook.Close();
-                _excel.Quit();
-            }
-            catch
-            {
-                MessageBox.Show("Excel don`t finished work!");
-            }
+            _workbook.Close();
+            _excel.Quit();
             return path;
         }
         public void Dispose()
         {
-
+            while (true)
+                try
+                {
+                    _workbook.Close();
+                    _excel.Quit();
+                }
+                catch { break; }
         }
     }
 }
