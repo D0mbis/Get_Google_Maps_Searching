@@ -19,15 +19,22 @@ namespace Selenium
             using (StreamReader stream = new StreamReader("path.txt")) { path = stream.ReadToEnd(); }
         }
 
-        public string SaveNewFile()
+        public string SaveAs()
         {
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "Книга Excel 97-2003 (*.xlsx) | *.xlsx";
-            if (saveDialog.ShowDialog() == true)
+            try
             {
-                path = saveDialog.FileName.ToString();
+                SaveFileDialog saveDialog = new SaveFileDialog();
+                saveDialog.Filter = "Книга Excel 97-2003 (*.xlsx) | *.xlsx";
+                if (saveDialog.ShowDialog() == true)
+                {
+                    path = saveDialog.FileName.ToString();
+                }
+                return path;
             }
-            return path;
+            catch
+            {
+                return null;
+            }
         }
 
         internal void Open()
@@ -48,7 +55,7 @@ namespace Selenium
                 catch
                 {
                     Dispose();
-                    MessageBox.Show("Excel does not start, the version may be incompatible");
+                    MessageBox.Show("Error! \n Excel does not start, the version may be incompatible");
                 }
             }
         }
@@ -60,22 +67,22 @@ namespace Selenium
 
         public string Save()
         {
-            //using (StreamReader stream = new StreamReader("path.txt")) { path = stream.ReadToEnd(); }
             try
             {
                 if (File.Exists(path))
                 {
                     _workbook.SaveAs(path);
                     using (StreamWriter stream = new StreamWriter("path.txt")) { stream.Write(path); }
-                    MessageBox.Show("Results was saved!");
+                    MessageBox.Show("Results was saved successfully!");
                 }
                 else
                 {
-                    MessageBox.Show("Save error! You need to correctly set the path to save the file. Try again");
-                    SaveNewFile();
+                    MessageBox.Show("Save error! \n You need to correctly set the path to save the file. Try again");
+                    SaveAs();
                     _workbook.SaveAs(path);
                     using (StreamWriter stream = new StreamWriter("path.txt")) { stream.Write(path); }
-                    MessageBox.Show("Results was saved!");
+                    MessageBox.Show("Results was saved successfully!");
+
                 }
             }
             catch
@@ -83,8 +90,8 @@ namespace Selenium
                 //MessageBox.Show("You need to set the path to the file with the results!");
                 do
                 {
-                    MessageBox.Show("Save error! You need to correctly set the path to save the file. Try again");
-                    SaveNewFile();
+                    MessageBox.Show("Save error! \n You need to correctly set the path to save the file. Try again");
+                    SaveAs();
                     try
                     {
                         _workbook.SaveAs(path);
@@ -96,21 +103,24 @@ namespace Selenium
                 }
                 while (true);
                 using (StreamWriter stream = new StreamWriter("path.txt")) { stream.Write(path); }
-                MessageBox.Show("Results was saved!");
+                MessageBox.Show("Results was saved successfully!");
             }
-            _workbook.Close();
-            _excel.Quit();
-            return path;
-        }
-        public void Dispose()
-        {
             while (true)
                 try
                 {
                     _workbook.Close();
                     _excel.Quit();
                 }
-                catch { break; }
+                catch
+                {
+                    _excel.Quit();
+                    break;
+                }
+            return path;
+        }
+        public void Dispose()
+        {
+           
         }
     }
 }

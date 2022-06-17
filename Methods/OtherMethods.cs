@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Selenium
 {
     internal class OtherMethods : IDisposable
     {
-        public int scrollingDelay { get; set; }
+        public int ScrollingDelay { get; private set; }
 
         public bool CheckingUserInput(string text)
         {
@@ -28,25 +24,25 @@ namespace Selenium
             else return false;
         }
 
-        public bool CheckingRadiobutton (bool? isChecked1, bool? isChecked2, bool? isChecked3)
+        public bool CheckingRadiobutton(bool? isChecked1, bool? isChecked2, bool? isChecked3)
         {
             int value = 2000, value1 = 1500, value2 = 1000;
             {
                 if (isChecked1 == true)
                 {
-                    scrollingDelay = value;
+                    ScrollingDelay = value;
                     return true;
                 }
 
                 else if (isChecked2 == true)
                 {
-                    scrollingDelay = value1;
-                    return  true;
+                    ScrollingDelay = value1;
+                    return true;
                 }
                 else if (isChecked3 == true)
                 {
-                    scrollingDelay = value2;
-                    return  true;
+                    ScrollingDelay = value2;
+                    return true;
                 }
                 else
                 {
