@@ -18,7 +18,7 @@ namespace Selenium
         private string link;
         Dictionary<string, List<string>> DictionaryOfResults = new Dictionary<string, List<string>>();
 
-        IWebDriver LaunchChromDriver()
+        IWebDriver LaunchChromDriver(string link)
         {
             try
             {
@@ -27,13 +27,13 @@ namespace Selenium
             }
             catch
             {
-                MessageBox.Show("Error launch chromedriver! \n Maybe chromedriver version was chenged.");
+                MessageBox.Show("Error launch chromedriver! \n Maybe chromedriver version was chenged.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }
-        public void GetListOfWebElements(int scrollingDelay)
+        public void GetListOfWebElements(int scrollingDelay, string link)
         {
-            var driver = LaunchChromDriver();
+            var driver = LaunchChromDriver(link);
             Thread.Sleep(3000);
             IJavaScriptExecutor jsExecutor = (IJavaScriptExecutor)driver;
             var buttonNextPage = driver.FindElement(By.CssSelector("#ppdPk-Ej1Yeb-LgbsSe-tJiF1e"));
@@ -74,7 +74,7 @@ namespace Selenium
             }
             catch
             {
-                MessageBox.Show("Error! \n Chromedriver did`t finished work successfully.");
+                MessageBox.Show("Chromedriver did`t finished work successfully", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         Dictionary<string, List<string>> PutInDictionary(ReadOnlyCollection<IWebElement> listOfWebElements)
@@ -111,33 +111,18 @@ namespace Selenium
             }
             return DictionaryOfResults;
         }
-        public string SaveDictionaryInExcel()
+        public string SaveResultsInExcel()
         {
             try
             {
-                using (ExcelMethods excelMethods = new ExcelMethods())
+                using (ExcelMethods excel = new ExcelMethods())
                 {
-                    excelMethods.Open();
-                    int rowNumber = 1, columnNumber;
-                    foreach (var item in DictionaryOfResults)
-                    {
-                        columnNumber = 1;
-                        excelMethods.ToExcel(rowNumber, columnNumber, item.Key);
-                        foreach (var item2 in item.Value)
-                        {
-                            columnNumber++;
-                            excelMethods.ToExcel(rowNumber, columnNumber, item2);
-                        }
-                        rowNumber++;
-                    }
-                    //pathValue.Text = excelMethods.Save();
-                    MessageBox.Show($"The program successfully finished work. \n Results were found: {DictionaryOfResults.Count}");
-                    return excelMethods.Save();
+                    return excel.SaveExcelFileNew(DictionaryOfResults, excel.GetCorrectlyPath());
                 }
             }
             catch
             {
-                MessageBox.Show($"Error! \n Put dictionary in Excel does`t complete successfully.");
+                MessageBox.Show("Save dictionary in Excel does`t complete successfully.", "Error!",MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
         }

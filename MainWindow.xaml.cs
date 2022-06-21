@@ -14,15 +14,14 @@ namespace Selenium
         private void StartBrn_Click(object sender, RoutedEventArgs e)
         {
             // checking true user input
-            using (OtherMethods otherMethods = new OtherMethods())
+            using (CheckUserInput userInput = new CheckUserInput(linkValue.Text, ScrollingDelay.IsChecked,
+                                                                ScrollingDelay1.IsChecked, ScrollingDelay2.IsChecked))
             {
-                bool avalible = otherMethods.CheckingUserInput(linkValue.Text) &&
-                otherMethods.CheckingRadiobutton(ScrollingDelay.IsChecked, ScrollingDelay1.IsChecked, ScrollingDelay2.IsChecked);
-                if (avalible)
-                    using (ChromedriverMethods session = new ChromedriverMethods(linkValue.Text))
+                if (userInput.Available)
+                    using (ChromedriverMethods session = new ChromedriverMethods())
                     {
-                        session.GetListOfWebElements(otherMethods.ScrollingDelay);
-                        pathValue.Text = session.SaveDictionaryInExcel();
+                        session.GetListOfWebElements(userInput.ScrollingDelay, linkValue.Text);
+                        pathValue.Text = session.SaveResultsInExcel();
                     }
             }
         }
@@ -35,7 +34,7 @@ namespace Selenium
 }
 
 /* 
-  +  1. Correctly seve file (messageBox over window
+  +  1. Correctly seve file  
      2. Open every item of ListOfOnePage
      3. Save links and telephone numbers
      4. Go on every link and close (frome excel file or from listOfResult)
