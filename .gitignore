@@ -1,8 +1,4 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.vs/*
+﻿/.vs/*
 UpgradeLog*.htm
 /obj*
 /Result*
@@ -20,5 +16,3 @@ _ReSharper*/
 *.sap
 .vsconfig
 *.suo
-*.csproj*
-v8_context_snapshot.bin
