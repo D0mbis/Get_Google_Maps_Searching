@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 
-//using Excel = Microsoft.Office.Interop.Excel;
-
 namespace Selenium
 {
     internal class ExcelMethods : IDisposable
