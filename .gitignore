@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 ﻿/.vs/*
 UpgradeLog*.htm
+=======
+﻿UpgradeLog*.htm
+>>>>>>> develop
 /obj*
 /Result*
 
