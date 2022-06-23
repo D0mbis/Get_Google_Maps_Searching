@@ -40,5 +40,6 @@ namespace Selenium
      4. Go on every link and close (frome excel file or from listOfResult)
      5. Search contacts and save to Excel
      6. Hide program work
-     7. Fix bugs(comments)
+     7. Get rid of "path.txt"
+     8. Fix bugs(comments)
 */
