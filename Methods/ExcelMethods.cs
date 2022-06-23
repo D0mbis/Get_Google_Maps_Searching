@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 
-//using Excel = Microsoft.Office.Interop.Excel;
-
 namespace Selenium
 {
     internal class ExcelMethods : IDisposable
@@ -60,6 +58,10 @@ namespace Selenium
                     }
                 }
             }
+
+        internal void ToExcel(int row, int column, object data)
+        {
+            _workbook.ActiveSheet.Cells[row, column] = data;
         }
 
         public string SaveAs()

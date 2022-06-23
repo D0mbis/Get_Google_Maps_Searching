@@ -10,6 +10,12 @@ namespace Selenium
 {
     internal class ChromedriverMethods : IDisposable
     {
+
+        public ChromedriverMethods(string link)
+        {
+            this.link = link;
+        }
+        private string link;
         Dictionary<string, List<string>> DictionaryOfResults = new Dictionary<string, List<string>>();
 
         IWebDriver LaunchChromDriver(string link)
