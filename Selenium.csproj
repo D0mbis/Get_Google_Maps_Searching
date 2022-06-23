@@ -136,7 +136,6 @@
     <Content Include="chromedriver.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="path.txt" />
     <Resource Include="icon.ico" />
     <Resource Include="icon.png" />
   </ItemGroup>

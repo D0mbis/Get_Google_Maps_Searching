@@ -16,7 +16,11 @@ namespace Selenium
         {
             try
             {
-                IWebDriver driver = new ChromeDriver { Url = link };
+                var chromeDriverService = ChromeDriverService.CreateDefaultService();
+                chromeDriverService.HideCommandPromptWindow = true;
+                ChromeOptions option = new ChromeOptions();
+                option.AddArgument("--headless");
+                IWebDriver driver = new ChromeDriver(chromeDriverService, option) { Url = link };
                 return driver;
             }
             catch
@@ -54,7 +58,8 @@ namespace Selenium
                         }
                     }
                     PutInDictionary(listOfWebElements);
-                    buttonNextPage.Click();
+                    //buttonNextPage.Click();
+                    break;
                     Thread.Sleep(3000);
                 }
                 catch
@@ -125,11 +130,4 @@ namespace Selenium
         {
         }
     }
-
-
-
-    /* PhantomJSDriverService driverService = PhantomJSDriverService.CreateDefaultService();
-     driverService.HideCommandPromptWindow = true;
- IWebDriver PJS = new PhantomJSDriver(driverService);*/  //HIDE console Window FJS
-
 }

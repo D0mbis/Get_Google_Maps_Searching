@@ -3,7 +3,9 @@
 /Result*
 /Office*
 /Chromedrivers*
+/bin*
 
+path.txt
 .vs/
 .idea/
 .vsconfig
