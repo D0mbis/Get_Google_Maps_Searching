@@ -1,14 +1,12 @@
-<<<<<<< HEAD
-﻿/.vs/*
-UpgradeLog*.htm
-=======
-﻿UpgradeLog*.htm
->>>>>>> develop
+﻿
 /obj*
 /Result*
+/Office*
+/Chromedrivers*
 
 .vs/
 .idea/
+.vsconfig
 *.[Cc]ache
 !?*.[Cc]ache/
 _ReSharper*/
@@ -18,5 +16,5 @@ _ReSharper*/
 *.vsp
 *.vspx
 *.sap
-.vsconfig
+UpgradeLog*.htm
 *.suo
