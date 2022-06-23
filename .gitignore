@@ -1,8 +1,18 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+﻿/.vs/*
+UpgradeLog*.htm
+/obj*
+/Result*
 
-/.vs/Selenium/FileContentIndex/63e7201c-5b30-4ab0-ac8b-70337c9df425.vsidx
-/.vs/Selenium/FileContentIndex/82615db2-e276-46a8-ad71-f9521648d6f3.vsidx
-/.vs/Selenium/FileContentIndex/8c9f2412-ffa9-4d38-9ea0-fafe3a296147.vsidx
-/.vs/Selenium/FileContentIndex/aade16fd-12b9-4369-8fa9-94b3a9521b22.vsidx
+.vs/
+.idea/
+*.[Cc]ache
+!?*.[Cc]ache/
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+*.psess
+*.vsp
+*.vspx
+*.sap
+.vsconfig
+*.suo
