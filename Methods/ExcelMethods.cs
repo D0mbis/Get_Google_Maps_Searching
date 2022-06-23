@@ -42,7 +42,6 @@ namespace Selenium
                     {
                         continue;
                     }
-
                 }
                 else
                 {
@@ -117,9 +116,10 @@ namespace Selenium
                     package.Save();
                     MessageBox.Show($"Results were saved: {dictionaryOfResults.Count}", "Successfully completed", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                catch 
+                catch
                 {
-                    MessageBox.Show("Save Excel file does`t complete successfully.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Folder does not exist, select an existing folder.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    package.SaveAs(SaveAs()); 
                 }
                 return path;
             }
