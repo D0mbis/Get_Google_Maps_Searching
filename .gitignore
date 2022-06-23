@@ -1,9 +1,12 @@
-﻿UpgradeLog*.htm
+﻿
 /obj*
 /Result*
+/Office*
+/Chromedrivers*
 
 .vs/
 .idea/
+.vsconfig
 *.[Cc]ache
 !?*.[Cc]ache/
 _ReSharper*/
@@ -13,5 +16,5 @@ _ReSharper*/
 *.vsp
 *.vspx
 *.sap
-.vsconfig
+UpgradeLog*.htm
 *.suo
