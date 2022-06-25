@@ -6,15 +6,12 @@ namespace Selenium
     internal class CheckUserInput : IDisposable
     {
         public int ScrollingDelay { get; private set; }
-<<<<<<<< HEAD:Methods/OtherMethods.cs
-========
         public bool Available { get; private set; }
         public CheckUserInput(string text, bool? isChecked1, bool? isChecked2, bool? isChecked3)
         {
             Available = CheckingUserInput(text) &&
             CheckingRadiobutton(isChecked1, isChecked2, isChecked3);
         }
->>>>>>>> develop:Methods/CheckUserInput.cs
 
         bool CheckingUserInput(string text)
         {
@@ -33,11 +30,7 @@ namespace Selenium
             else return false;
         }
 
-<<<<<<<< HEAD:Methods/OtherMethods.cs
-        public bool CheckingRadiobutton(bool? isChecked1, bool? isChecked2, bool? isChecked3)
-========
-        bool CheckingRadiobutton(bool? isChecked1, bool? isChecked2, bool? isChecked3)
->>>>>>>> develop:Methods/CheckUserInput.cs
+        bool CheckingRadiobutton(bool? isChecked1, bool? isChecked2, bool? isChecked3)  // SWITCH CASE
         {
             int value = 2000, value1 = 1500, value2 = 1000;
             {

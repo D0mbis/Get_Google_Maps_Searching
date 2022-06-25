@@ -43,10 +43,23 @@ namespace Selenium
                         continue;
                     }
                 }
+                else if (string.IsNullOrEmpty(path))
+                {
+                    var result = MessageBox.Show("Please provide a path to save the file:", "Save results file", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                    if (result == MessageBoxResult.OK)
+                    {
+                        SaveAs();
+                        continue;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
                 else
                 {
                     var result = MessageBox.Show($"Do you want save file results in: {path}?", "Worning", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (result == MessageBoxResult.Yes)
+                    if (result == MessageBoxResult.Yes && path != null)
                     {
                         return path;
                     }
@@ -57,10 +70,6 @@ namespace Selenium
                     }
                 }
             }
-
-        internal void ToExcel(int row, int column, object data)
-        {
-            _workbook.ActiveSheet.Cells[row, column] = data;
         }
 
         public string SaveAs()
@@ -92,36 +101,37 @@ namespace Selenium
             using (ExcelPackage package = new ExcelPackage(path))
             {
                 var _worksheet = package.Workbook.Worksheets.Add("Results");
-                int rowNumber = 1, columnNumber;
+                int rowNumber = 2, columnNumber;
                 foreach (var item in dictionaryOfResults)
                 {
                     columnNumber = 1;
-                    _worksheet.Cells[rowNumber, columnNumber].LoadFromText(item.Key);
+                    _worksheet.Cells[rowNumber, columnNumber].Value = item.Key;
                     foreach (var item2 in item.Value)
                     {
                         columnNumber++;
                         try
                         {
-                            _worksheet.Cells[rowNumber, columnNumber].LoadFromText(item2);
+                            _worksheet.Cells[rowNumber, columnNumber].Value = item2;
                         }
                         catch { }
                     }
                     rowNumber++;
                 }
-
                 try
                 {
-                    _worksheet.Cells.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     _worksheet.Cells.AutoFitColumns();
+                    _worksheet.Cells.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     package.Save();
                     MessageBox.Show($"Results were saved: {dictionaryOfResults.Count}", "Successfully completed", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return path;
                 }
                 catch
                 {
                     MessageBox.Show("Folder does not exist, select an existing folder.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                    package.SaveAs(SaveAs()); 
+                    path = SaveAs();
+                    package.SaveAs(path);
+                    return path;
                 }
-                return path;
             }
         }
 

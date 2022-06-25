@@ -24,6 +24,7 @@ namespace Selenium
                         pathValue.Text = session.SaveResultsInExcel();
                     }
             }
+            using (StreamWriter write = new StreamWriter("path.txt")) { write.Write(pathValue.Text); }
         }
 
         private void OpenDialoSaveAsgBtn(object sender, RoutedEventArgs e)
@@ -36,8 +37,8 @@ namespace Selenium
 /* 
   +  1. Correctly seve file  
   +  2. Hide program work
-     3. Open every item of ListOfOnePage
-     4. Save links and telephone numbers
+  +  3. Open every item of ListOfOnePage
+  +  4. Save links and telephone numbers  SWITCH CASE 
      5. Go on every link and close (frome excel file or from listOfResult)
      6. Search contacts and save to Excel
      7. Get rid of "path.txt"
