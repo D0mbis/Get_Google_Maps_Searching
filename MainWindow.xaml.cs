@@ -38,7 +38,7 @@ namespace Selenium
   +  1. Correctly seve file  
   +  2. Hide program work
   +  3. Open every item of ListOfOnePage
-  +  4. Save links and telephone numbers  SWITCH CASE 
+  +  4. Save links and telephone numbers  
      5. Go on every link and close (frome excel file or from listOfResult)
      6. Search contacts and save to Excel
      7. Get rid of "path.txt"

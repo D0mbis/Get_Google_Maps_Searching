@@ -43,10 +43,10 @@ namespace Selenium
                         continue;
                     }
                 }
-                else if(string.IsNullOrEmpty(path))
+                else if (string.IsNullOrEmpty(path))
                 {
                     var result = MessageBox.Show("Please provide a path to save the file:", "Save results file", MessageBoxButton.OKCancel, MessageBoxImage.Information);
-                    if(result == MessageBoxResult.OK)
+                    if (result == MessageBoxResult.OK)
                     {
                         SaveAs();
                         continue;
@@ -101,7 +101,14 @@ namespace Selenium
             using (ExcelPackage package = new ExcelPackage(path))
             {
                 var _worksheet = package.Workbook.Worksheets.Add("Results");
-                int rowNumber = 2, columnNumber;
+                string[] headers = { "Назва компанії", "Рід діяльності", "Телефон", "Адреса", "Посилання" };
+                int column = 1, rowNumber = 2, columnNumber;
+                foreach (string item in headers)
+                {
+                    _worksheet.Cells[1, column].Value = item;
+                    column++;
+                }
+                
                 foreach (var item in dictionaryOfResults)
                 {
                     columnNumber = 1;

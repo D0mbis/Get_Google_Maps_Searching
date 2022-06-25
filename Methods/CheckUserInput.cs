@@ -30,7 +30,7 @@ namespace Selenium
             else return false;
         }
 
-        bool CheckingRadiobutton(bool? isChecked1, bool? isChecked2, bool? isChecked3)  // SWITCH CASE
+        bool CheckingRadiobutton(bool? isChecked1, bool? isChecked2, bool? isChecked3) 
         {
             int value = 2000, value1 = 1500, value2 = 1000;
             {
