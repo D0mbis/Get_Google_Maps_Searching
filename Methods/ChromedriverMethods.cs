@@ -10,6 +10,7 @@ namespace Selenium
 {
     internal class ChromedriverMethods : IDisposable
     {
+        DateTime timeStart = DateTime.Now;
         Dictionary<string, List<string>> DictionaryOfResults = new Dictionary<string, List<string>>();
 
         IWebDriver LaunchChromDriver(string link)
@@ -17,10 +18,12 @@ namespace Selenium
             try
             {
                 var chromeDriverService = ChromeDriverService.CreateDefaultService();
-                chromeDriverService.HideCommandPromptWindow = true;
+                //chromeDriverService.HideCommandPromptWindow = true;
                 ChromeOptions option = new ChromeOptions();
                 //option.AddArgument("--headless");
                 IWebDriver driver = new ChromeDriver(chromeDriverService, option) { Url = link };
+                driver.Manage().Window.Maximize();
+                //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3); 
                 return driver;
             }
             catch
@@ -29,43 +32,176 @@ namespace Selenium
                 return null;
             }
         }
-        public void GetListOfWebElements(int scrollingDelay, string link)
+        void WaitPanelInfo(IWebDriver driver, IWebElement item, By locator)
         {
-            var driver = LaunchChromDriver(link);
-            Thread.Sleep(4000);
-            IJavaScriptExecutor jsExecutor = (IJavaScriptExecutor)driver;
-            var buttonNextPage = driver.FindElement(By.CssSelector("#ppdPk-Ej1Yeb-LgbsSe-tJiF1e"));
-            while (true)
+            int delay = 100, counter = 4;
+            while (counter != 0)
             {
+                item.Click();
+                Thread.Sleep(delay);
                 try
                 {
-                    var listOfWebElements = driver.FindElements(By.XPath(".//*[@aria-label and @class='m6QErb DxyBCb kA9KIf dS8AEf ecceSd' or @class='m6QErb DxyBCb kA9KIf dS8AEf ecceSd QjC7t']/div/div[contains(@class,'Nv2PK ')]"));
-                    int counter = 2;
+                    var element = driver.FindElement(locator);
+                    if (element.Displayed && element.Enabled)
+                    {
+                        var nameOneRow = item.FindElement(By.XPath(".//div[@class='qBF1Pd fontHeadlineSmall']"));
+                        var check = item.FindElement(By.XPath("//*[@class='DUwDvf fontHeadlineLarge']//span[text()]"));
+                        if (nameOneRow.Text == check.Text)
+                        {
+                            bool avalible = item.FindElement(By.XPath("//*[@class='RcCsl fVHpi w4vB1d NOE9ve M0S7ae AG25L']/parent::div")).Enabled;
+                            if (avalible)
+                                break;
+                            else
+                            {
+                                try { item.FindElement(By.XPath("//*[contains(@class,'VfPpkd-icon-LgbsSe yHy1rc ')]")).Click(); } catch { }
+                                counter--;
+                                continue;
+                            }
+                        }
+                    }
+                    //else continue;
+                }
+                catch
+                {
+                    delay += 700;
+                    counter--;
+                    continue;
+                }
+            }
+        }
+        ReadOnlyCollection<IWebElement> WaitListOfElements(IWebDriver driver, By locator)
+        {
+            while (true)
+            {
+                Thread.Sleep(200);
+                try
+                {
+                    return driver.FindElements(locator);
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+        }
+        List<string> WaitForCopyButtonEnabled(IWebElement _item, IJavaScriptExecutor jsExecutor)
+        {
+            string part1 = "//*[@class='RcCsl fVHpi w4vB1d NOE9ve M0S7ae AG25L']/*[contains(@data-item-id,",
+                   part2 = ")]/following-sibling::*//img[contains(@src,'content')]/parent::span/parent::button";
+            string[] xPath ={"//div[@class='fontBodyMedium']//button[text()]", $"{part1}'phone'{part2}",
+                                              $"{part1}'address'{part2}", $"{part1}'authority'{part2}"};
+            List<string> contentOneRow = new List<string>();
+            try
+            {
+                var typeOfActivity = _item.FindElement(By.XPath(xPath[0]));
+                contentOneRow.Add(typeOfActivity.Text.ToString());
+            }
+            catch
+            {
+                contentOneRow.Add(" ");
+            }
+            foreach (var item in xPath)
+            {
+                if (item != xPath[0])
+                {
+                    int counter = 3;
                     while (counter != 0)
                     {
-                        jsExecutor.ExecuteScript("document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollBy(0, 5000);");
-                        Thread.Sleep(scrollingDelay);
-                        var ListOfOnePageAfterScrolling = driver.FindElements(By.XPath(".//*[@aria-label and @class='m6QErb DxyBCb kA9KIf dS8AEf ecceSd' or @class='m6QErb DxyBCb kA9KIf dS8AEf ecceSd QjC7t']/div/div[contains(@class,'Nv2PK ')]"));
-                        if (ListOfOnePageAfterScrolling.Count > listOfWebElements.Count)
+                        Thread.Sleep(100);
+                        try
                         {
-                            listOfWebElements = ListOfOnePageAfterScrolling;
-                            continue;
+                            var element = _item.FindElement(By.XPath(item));
+                            if (element.Enabled)
+                            {
+                                element.Click();
+                                if (Clipboard.ContainsText() == true)
+                                {
+                                    contentOneRow.Add(Clipboard.GetText().ToString());
+                                    Clipboard.Clear();
+                                    break;
+                                }
+                                else contentOneRow.Add(""); break;
+                            }
+                            break;
                         }
-                        else if (ListOfOnePageAfterScrolling.Count <= listOfWebElements.Count)
+                        catch
                         {
+                            if (counter == 2)
+                            {
+                                try
+                                {
+                                    jsExecutor.ExecuteScript("document.querySelector('.bJzME.Hu9e2e.tTVLSc *[class*=dS8AEf]').scrollBy(0, 300);");
+                                    jsExecutor.ExecuteScript("document.querySelector('.bJzME.Hu9e2e.tTVLSc *[class*=dS8AEf]').scrollBy(0, -300);");
+                                }
+                                catch { }
+                                counter--;
+                                continue;
+                            }
+                            if (counter == 1)
+                            {
+                                contentOneRow.Add(" ");
+                                break;
+                            }
                             counter--;
                             continue;
                         }
                     }
-                    PutInDictionary(listOfWebElements, jsExecutor);
-                    buttonNextPage.Click();
-                    Thread.Sleep(1000);
+                }
+                else continue;
+            }
+            return contentOneRow;
+        }
+
+        public void GetListOfWebElements(int scrollingDelay, string link)
+        {
+            var driver = LaunchChromDriver(link);
+            IJavaScriptExecutor jsExecutor = (IJavaScriptExecutor)driver;
+            while (true)
+            {
+                try
+                {
+                    var listOfWebElements = WaitListOfElements(driver, By.XPath(".//*[@aria-label and contains(@class,'m6QErb DxyBCb kA9KIf')]//*[contains(@class,'Nv2PK ')]"));
+                    //int counter = 5;
+                    while (true)
+                    {
+                        jsExecutor.ExecuteScript("document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollBy(0, 5000);");
+                        Thread.Sleep(scrollingDelay);
+                        var ListOfOnePageAfterScrolling = driver.FindElements(By.XPath(".//*[@aria-label and contains(@class,'m6QErb DxyBCb kA9KIf')]//*[contains(@class,'Nv2PK ')]"));
+
+                        if (ListOfOnePageAfterScrolling.Count > listOfWebElements.Count)
+                        {
+                            listOfWebElements = ListOfOnePageAfterScrolling;
+                        }
+                        else if (ListOfOnePageAfterScrolling.Count <= listOfWebElements.Count)
+                        {
+                            jsExecutor.ExecuteScript("document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollBy(0, -5000);");
+                            //Thread.Sleep(scrollingDelay);
+                            //counter--;
+                        }
+                        try
+                        {
+                            var endOfPage = driver.FindElement(By.CssSelector(".PbZDve"));
+                            break;
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                    }
+                    PutInDictionary(listOfWebElements, jsExecutor, driver);
+                    // next page button click 
+                    try
+                    {
+                        driver.FindElement(By.CssSelector("*[id*=eY4Fjd]")).Click();
+                    }
+                    catch { break; }
                 }
                 catch
                 {
                     break;
                 }
             }
+
             try
             {
                 driver.Quit();
@@ -75,61 +211,52 @@ namespace Selenium
                 MessageBox.Show("Chromedriver did`t finished work successfully", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        Dictionary<string, List<string>> PutInDictionary(ReadOnlyCollection<IWebElement> listOfWebElements, IJavaScriptExecutor jsExecutor)
+        Dictionary<string, List<string>> PutInDictionary(ReadOnlyCollection<IWebElement> listOfWebElements, IJavaScriptExecutor jsExecutor, IWebDriver driver)
         {
+            List<string> listOfCopyes = new List<string>();
             foreach (var item in listOfWebElements)
             {
-                try
+                int counter = 2;
+                while (counter != 0)
                 {
-                    var nameOneRow = item.FindElement(By.XPath(".//div[@class='qBF1Pd fontHeadlineSmall']"));
-                    if (nameOneRow != null)
+                    try
                     {
-                        List<string> contentOneRow = new List<string>();
-                        string[] xPath ={"//div[@class='fontBodyMedium']//button[text()]",
-                                         "//div[@class='RcCsl fVHpi w4vB1d NOE9ve M0S7ae AG25L']/button[contains(@data-item-id,'phone')]/following-sibling::div//img[contains(@src,'content')]",
-                                         "//div[@class='RcCsl fVHpi w4vB1d NOE9ve M0S7ae AG25L']/button[@data-item-id='address']/following-sibling::div//img[contains(@src,'content')]",
-                                         "//div[@class='RcCsl fVHpi w4vB1d NOE9ve M0S7ae AG25L']/button[contains(@data-item-id,'authority')]/following-sibling::div//img[contains(@src,'content')]"};
-                        item.Click();
-                        Thread.Sleep(2500);
-                        try
+                        WaitPanelInfo(driver, item, By.CssSelector(".bJzME.Hu9e2e.tTVLSc"));
+                        var nameOneRow = item.FindElement(By.XPath(".//div[@class='qBF1Pd fontHeadlineSmall']"));
+                        if (!DictionaryOfResults.ContainsKey(nameOneRow.Text))
                         {
-                            contentOneRow.Add(item.FindElement(By.XPath(xPath[0])).Text.ToString());
+                            DictionaryOfResults[nameOneRow.Text] = WaitForCopyButtonEnabled(item, jsExecutor);
                         }
-                        catch
+                        else
                         {
-                            contentOneRow.Add(" ");
-                        }
-
-                        jsExecutor.ExecuteScript("document.querySelector('div .bJzME.Hu9e2e.tTVLSc div .m6QErb.WNBkOb div.m6QErb.DxyBCb.kA9KIf.dS8AEf').scrollBy(0, 350);");
-                        foreach (var item2 in xPath)
-                        {
-                            if (item2 != xPath[0])
-                                try
+                            //listOfCopyes.Add(nameOneRow.Text);
+                            string copy = nameOneRow.Text + " ";
+                            while (true)
+                            {
+                                if (listOfCopyes.Contains(copy))
                                 {
-                                    item.FindElement(By.XPath(item2)).Click();
-                                    Thread.Sleep(500);
-                                    if (Clipboard.ContainsText() == true)
-                                    {
-                                        contentOneRow.Add(Clipboard.GetText().ToString());
-                                        Clipboard.Clear();
-                                    }
-                                    else
-                                    {
-                                        contentOneRow.Add(" ");
-                                        continue;
-                                    }
+                                    copy += " ";
                                 }
-                                catch
+                                else
                                 {
-                                    contentOneRow.Add(" ");
+                                    DictionaryOfResults[copy] = WaitForCopyButtonEnabled(item, jsExecutor);
+                                    listOfCopyes.Add(copy);
+                                    break;
                                 }
+                            }
                         }
-                        DictionaryOfResults[nameOneRow.Text] = contentOneRow;
+                        break;
+                    }
+                    catch
+                    {
+                        jsExecutor.ExecuteScript("document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollBy(0, 200);");
+                        counter--;
+                        continue;
                     }
                 }
-                catch
+                if (listOfWebElements.IndexOf(item) == listOfWebElements.Count - 1)
                 {
-                    continue;
+                    ;
                 }
             }
             return DictionaryOfResults;
@@ -140,7 +267,7 @@ namespace Selenium
             {
                 using (ExcelMethods excel = new ExcelMethods())
                 {
-                    return excel.SaveExcelFileNew(DictionaryOfResults, excel.GetCorrectlyPath());
+                    return excel.SaveExcelFileNew(DictionaryOfResults, excel.GetCorrectlyPath(), timeStart);
                 }
             }
             catch

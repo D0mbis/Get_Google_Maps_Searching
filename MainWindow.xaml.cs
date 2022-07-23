@@ -8,12 +8,13 @@ namespace Selenium
         public MainWindow()
         {
             InitializeComponent();
-            using (StreamReader stream = new StreamReader("path.txt")) { pathValue.Text = stream.ReadToEnd(); if (!File.Exists(pathValue.Text)) pathValue.Text = null; }
+            //using (StreamReader stream = new StreamReader("path.txt")) { pathValue.Text = stream.ReadToEnd(); if (!File.Exists(pathValue.Text)) pathValue.Text = null; }
+            pathValue.Text = System.Configuration.ConfigurationManager.AppSettings["path"];
         }
 
         private void StartBrn_Click(object sender, RoutedEventArgs e)
         {
-            // checking true user input
+            // checking user input
             using (CheckUserInput userInput = new CheckUserInput(linkValue.Text, ScrollingDelay.IsChecked,
                                                                 ScrollingDelay1.IsChecked, ScrollingDelay2.IsChecked))
             {
@@ -24,12 +25,14 @@ namespace Selenium
                         pathValue.Text = session.SaveResultsInExcel();
                     }
             }
-            using (StreamWriter write = new StreamWriter("path.txt")) { write.Write(pathValue.Text); }
+            //using (StreamWriter write = new StreamWriter("path.txt")) { write.Write(pathValue.Text); }
+            using (CheckUserInput check = new CheckUserInput()) { check.AppConfigInfo(pathValue.Text); }
         }
 
         private void OpenDialoSaveAsgBtn(object sender, RoutedEventArgs e)
         {
             using (ExcelMethods excelMethods = new ExcelMethods()) { pathValue.Text = excelMethods.SaveAs(); }
+            using (CheckUserInput check = new CheckUserInput()) { check.AppConfigInfo(pathValue.Text); }
         }
     }
 }
@@ -38,9 +41,9 @@ namespace Selenium
   +  1. Correctly seve file  
   +  2. Hide program work
   +  3. Open every item of ListOfOnePage
-  +  4. Save links and telephone numbers  SWITCH CASE 
-     5. Go on every link and close (frome excel file or from listOfResult)
-     6. Search contacts and save to Excel
-     7. Get rid of "path.txt"
-     8. Fix bugs(comments)
+  +  4. Save links and telephone numbers  
+  +  5. FINALY TEST AND CORRECTLY COMMENTS
+  +  6. Get rid of "path.txt"
+     7. Go on every link and close (frome excel file or from listOfResult)
+     8. Search contacts and save to Excel
 */

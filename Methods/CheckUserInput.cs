@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Windows;
 
 namespace Selenium
@@ -7,6 +8,7 @@ namespace Selenium
     {
         public int ScrollingDelay { get; private set; }
         public bool Available { get; private set; }
+        public CheckUserInput() { }
         public CheckUserInput(string text, bool? isChecked1, bool? isChecked2, bool? isChecked3)
         {
             Available = CheckingUserInput(text) &&
@@ -30,7 +32,7 @@ namespace Selenium
             else return false;
         }
 
-        bool CheckingRadiobutton(bool? isChecked1, bool? isChecked2, bool? isChecked3)  // SWITCH CASE
+        bool CheckingRadiobutton(bool? isChecked1, bool? isChecked2, bool? isChecked3)
         {
             int value = 2000, value1 = 1500, value2 = 1000;
             {
@@ -56,6 +58,19 @@ namespace Selenium
                     return false;
                 }
             }
+        }
+        public void AppConfigInfo(string path)
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            if (config.AppSettings.Settings["path"] == null)
+            {
+                config.AppSettings.Settings.Add("path", path);
+            }
+            else
+            {
+                config.AppSettings.Settings["path"].Value = path;
+            }
+            config.Save();
         }
 
         public void Dispose()
