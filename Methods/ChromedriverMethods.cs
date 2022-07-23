@@ -20,9 +20,9 @@ namespace Selenium
                 var chromeDriverService = ChromeDriverService.CreateDefaultService();
                 //chromeDriverService.HideCommandPromptWindow = true;
                 ChromeOptions option = new ChromeOptions();
-                //option.AddArgument("--headless");
+                option.AddArgument("--window-position=-32000,-32000");
                 IWebDriver driver = new ChromeDriver(chromeDriverService, option) { Url = link };
-                driver.Manage().Window.Maximize();
+                //driver.Manage().Window.Maximize();
                 //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3); 
                 return driver;
             }
