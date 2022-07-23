@@ -15,7 +15,8 @@ namespace Selenium
         public ExcelMethods()
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (StreamReader stream = new StreamReader("path.txt")) { path = stream.ReadToEnd(); }
+            //using (StreamReader stream = new StreamReader("path.txt")) { path = stream.ReadToEnd(); }
+            path = System.Configuration.ConfigurationManager.AppSettings["path"];
 
         }
         public string GetCorrectlyPath()
@@ -95,7 +96,7 @@ namespace Selenium
             }
         }
 
-        public string SaveExcelFileNew(Dictionary<string, List<string>> dictionaryOfResults, string path)
+        public string SaveExcelFileNew(Dictionary<string, List<string>> dictionaryOfResults, string path, DateTime timeStart)
         {
 
             using (ExcelPackage package = new ExcelPackage(path))
@@ -126,10 +127,11 @@ namespace Selenium
                 }
                 try
                 {
-                    _worksheet.Cells.AutoFitColumns();
+                    _worksheet.Cells.AutoFitColumns(0, 75);
                     _worksheet.Cells.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     package.Save();
-                    MessageBox.Show($"Results were saved: {dictionaryOfResults.Count}", "Successfully completed", MessageBoxButton.OK, MessageBoxImage.Information);
+                    var allTime = DateTime.Now.Subtract(timeStart).ToString("mm\\:ss");
+                    MessageBox.Show($"Results were saved: {dictionaryOfResults.Count}\n Time spent: {allTime} minutes", "Successfully completed", MessageBoxButton.OK, MessageBoxImage.Information);
                     return path;
                 }
                 catch
