@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
 using System.Windows;
 
 namespace Selenium
@@ -21,29 +21,24 @@ namespace Selenium
                 if (userInput.Available)
                     using (ChromedriverMethods session = new ChromedriverMethods())
                     {
-                        session.GetListOfWebElements(userInput.ScrollingDelay, linkValue.Text);
-                        pathValue.Text = session.SaveResultsInExcel();
+                        if (session.GetListOfWebElements(userInput.ScrollingDelay, linkValue.Text))
+                        {
+                            pathValue.Text = session.SaveResultsInExcel();
+                        }
+
                     }
+                userInput.AppConfigInfo(pathValue.Text);
             }
             //using (StreamWriter write = new StreamWriter("path.txt")) { write.Write(pathValue.Text); }
-            using (CheckUserInput check = new CheckUserInput()) { check.AppConfigInfo(pathValue.Text); }
         }
 
         private void OpenDialoSaveAsgBtn(object sender, RoutedEventArgs e)
         {
             using (ExcelMethods excelMethods = new ExcelMethods()) { pathValue.Text = excelMethods.SaveAs(); }
             using (CheckUserInput check = new CheckUserInput()) { check.AppConfigInfo(pathValue.Text); }
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
+
         }
     }
 }
-
-/* 
-  +  1. Correctly seve file  
-  +  2. Hide program work
-  +  3. Open every item of ListOfOnePage
-  +  4. Save links and telephone numbers  
-  +  5. FINALY TEST AND CORRECTLY COMMENTS
-  +  6. Get rid of "path.txt"
-     7. Go on every link and close (frome excel file or from listOfResult)
-     8. Search contacts and save to Excel
-*/
