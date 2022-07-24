@@ -19,7 +19,7 @@ namespace Selenium
             path = System.Configuration.ConfigurationManager.AppSettings["path"];
 
         }
-        public string GetCorrectlyPath()
+        void GetCorrectlyPath()
         {
             while (true)
             {
@@ -27,11 +27,11 @@ namespace Selenium
                 {
                     try
                     {
-                        var result = MessageBox.Show($"File: {path} will be overwrite. \n Are you sure?", "Worning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        var result = MessageBox.Show($"File: {path} will be overwrite. \nAre you sure?", "Worning", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         if (result == MessageBoxResult.Yes)
                         {
                             File.Delete(path);
-                            return path;
+                            break;
                         }
                         else
                         {
@@ -54,15 +54,32 @@ namespace Selenium
                     }
                     else
                     {
-                        return null;
+                        var result2 = MessageBox.Show($"Are you sure? \nPress \"Yes\" end results will be lost.", "Attention!", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (result2 == MessageBoxResult.Yes)
+                        {
+                            break;
+                        }
+                        else continue;
                     }
                 }
-                else
+                else if (!File.Exists(path))
                 {
-                    var result = MessageBox.Show($"Do you want save file results in: {path}?", "Worning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    var result = MessageBox.Show($"File: {path} does not exist \nDo you want to create a new file?", "Warning!", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        SaveAs();
+                        continue;
+                    }
+                }
+                {
+                    var result = MessageBox.Show($"Do you want to save the results in: {path}?", "Attention!", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (result == MessageBoxResult.Yes && path != null)
                     {
-                        return path;
+                        break;
                     }
                     else
                     {
@@ -96,13 +113,14 @@ namespace Selenium
             }
         }
 
-        public string SaveExcelFileNew(Dictionary<string, List<string>> dictionaryOfResults, string path, DateTime timeStart)
+        public string SaveExcelFileNew(Dictionary<string, List<string>> dictionaryOfResults, DateTime timeStart)
         {
-
+            var timeEnd = DateTime.Now;
+            GetCorrectlyPath();
             using (ExcelPackage package = new ExcelPackage(path))
             {
                 var _worksheet = package.Workbook.Worksheets.Add("Results");
-                string[] headers = { "Назва компанії", "Рід діяльності", "Телефон", "Адреса", "Посилання" };
+                string[] headers = { "Name", "Type of activity", "Phone", "Adress", "Website" };
                 int column = 1, rowNumber = 2, columnNumber;
                 foreach (string item in headers)
                 {
@@ -130,8 +148,8 @@ namespace Selenium
                     _worksheet.Cells.AutoFitColumns(0, 75);
                     _worksheet.Cells.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     package.Save();
-                    var allTime = DateTime.Now.Subtract(timeStart).ToString("mm\\:ss");
-                    MessageBox.Show($"Results were saved: {dictionaryOfResults.Count}\n Time spent: {allTime} minutes", "Successfully completed", MessageBoxButton.OK, MessageBoxImage.Information);
+                    var allTime = timeEnd.Subtract(timeStart).ToString("mm\\:ss");
+                    MessageBox.Show($"Results were saved: {dictionaryOfResults.Count}\nTime spent: {allTime} minutes", "Successfully completed", MessageBoxButton.OK, MessageBoxImage.Information);
                     return path;
                 }
                 catch
