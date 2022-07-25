@@ -8,14 +8,12 @@ namespace Selenium
     {
         public int ScrollingDelay { get; private set; }
         public bool Available { get; private set; }
-        public CheckUserInput() { }
-        public CheckUserInput(string text, bool? isChecked1, bool? isChecked2, bool? isChecked3)
+        public void CheckInput(string text, bool? isChecked1, bool? isChecked2, bool? isChecked3)
         {
-            Available = CheckingUserInput(text) &&
+            Available = CheckingInputLink(text) &&
             CheckingRadiobutton(isChecked1, isChecked2, isChecked3);
         }
-
-        bool CheckingUserInput(string text)
+        bool CheckingInputLink(string text)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -24,7 +22,7 @@ namespace Selenium
             }
             else if (!text.Contains("www.google"))
             {
-                MessageBox.Show("Link must contain 'www.google.com/maps/' \n Try again.");
+                MessageBox.Show("Link must contain 'www.google.com/maps/' \nTry again.");
                 return false;
             }
             else if (text.Contains("www.google"))
@@ -59,7 +57,7 @@ namespace Selenium
                 }
             }
         }
-        public void AppConfigInfo(string path)
+        public void SaveAppConfig(string path)
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             if (config.AppSettings.Settings["path"] == null)
