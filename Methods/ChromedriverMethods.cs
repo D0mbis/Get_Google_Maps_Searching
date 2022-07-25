@@ -27,13 +27,10 @@ namespace Selenium
                 //option.AddArgument("--headless");
                 Driver = new ChromeDriver(chromeDriverService, option) { Url = link };
                 //Driver.Manage().Window.Maximize();
-                //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3); 
-                //return driver;
             }
             catch
             {
                 MessageBox.Show("Error launch chromedriver! \n Maybe chromedriver version was chenged.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                //return null;
             }
         }
         bool WaitPanelInfo(IWebElement item, By locator)
@@ -58,6 +55,7 @@ namespace Selenium
                                 return true;
                             else
                             {
+                                //close panel button
                                 try { item.FindElement(By.XPath("//*[contains(@class,'VfPpkd-icon-LgbsSe yHy1rc ')]")).Click(); } catch { }
                                 counter--;
                                 continue;
@@ -112,6 +110,7 @@ namespace Selenium
             foreach (var item in xPath)
             {
                 int counter = 2;
+                
                 if (swith == 0)
                 {
                     while (counter != 0)
@@ -140,8 +139,9 @@ namespace Selenium
                             {
                                 try
                                 {
-                                    JsExecutor.ExecuteScript("document.querySelector('.bJzME.Hu9e2e.tTVLSc *[class*=dS8AEf]').scrollBy(0, 300);");
-                                    JsExecutor.ExecuteScript("document.querySelector('.bJzME.Hu9e2e.tTVLSc *[class*=dS8AEf]').scrollBy(0, -300);");
+                                    string path = "document.querySelector('.bJzME.Hu9e2e.tTVLSc *[class*=dS8AEf]')";
+                                    JsExecutor.ExecuteScript($"{path}.scrollBy(0, 300);");
+                                    JsExecutor.ExecuteScript($"{path}.scrollBy(0, -300);");
                                 }
                                 catch { }
                                 counter--;
@@ -157,6 +157,8 @@ namespace Selenium
                         }
                     }
                 }
+
+                //If at least one element was found
                 else
                 {
                     while (counter != 0)
@@ -187,25 +189,27 @@ namespace Selenium
         {
             LaunchChromDriver(link);
             JsExecutor = (IJavaScriptExecutor)Driver;
+            string path = "//*[@aria-label and contains(@class,'m6QErb DxyBCb kA9KIf')]//*[contains(@class,'Nv2PK ')]";
+            string path2 = "document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd')";
             while (true)
             {
                 try
                 {
-                    ListOfWebElements = WaitListOfElements(By.XPath(".//*[@aria-label and contains(@class,'m6QErb DxyBCb kA9KIf')]//*[contains(@class,'Nv2PK ')]"));
+                    ListOfWebElements = WaitListOfElements(By.XPath(path));
                     int counter = 20;
-                    while (counter !=0)
+                    while (counter != 0)
                     {
-                        JsExecutor.ExecuteScript("document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollBy(0, 5000);");
+                        JsExecutor.ExecuteScript($"{path2}.scrollBy(0, 5000);");
                         Thread.Sleep(scrollingDelay);
-                        var ListOfOnePageAfterScrolling = Driver.FindElements(By.XPath(".//*[@aria-label and contains(@class,'m6QErb DxyBCb kA9KIf')]//*[contains(@class,'Nv2PK ')]"));
+                        var ListAfterScrolling = Driver.FindElements(By.XPath(path));
 
-                        if (ListOfOnePageAfterScrolling.Count > ListOfWebElements.Count)
+                        if (ListAfterScrolling.Count > ListOfWebElements.Count)
                         {
-                            ListOfWebElements = ListOfOnePageAfterScrolling;
+                            ListOfWebElements = ListAfterScrolling;
                         }
-                        else if (ListOfOnePageAfterScrolling.Count <= ListOfWebElements.Count)
+                        else if (ListAfterScrolling.Count <= ListOfWebElements.Count)
                         {
-                            JsExecutor.ExecuteScript("document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scrollBy(0, -5000);");
+                            JsExecutor.ExecuteScript($"{path2}.scrollBy(0, -5000);");
                             counter--;
                         }
                         try

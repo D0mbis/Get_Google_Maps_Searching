@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,6 @@ namespace Selenium
         public ExcelMethods()
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            //using (StreamReader stream = new StreamReader("path.txt")) { path = stream.ReadToEnd(); }
             path = System.Configuration.ConfigurationManager.AppSettings["path"];
 
         }
@@ -120,24 +120,18 @@ namespace Selenium
             using (ExcelPackage package = new ExcelPackage(path))
             {
                 var _worksheet = package.Workbook.Worksheets.Add("Results");
-                string[] headers = { "Name", "Type of activity", "Phone", "Adress", "Website" };
-                int column = 1, rowNumber = 2, columnNumber;
-                foreach (string item in headers)
-                {
-                    _worksheet.Cells[1, column].Value = item;
-                    column++;
-                }
-                
+                var cells = _worksheet.Cells;
+                int rowNumber = 2, columnNumber;
                 foreach (var item in dictionaryOfResults)
                 {
                     columnNumber = 1;
-                    _worksheet.Cells[rowNumber, columnNumber].Value = item.Key;
+                    cells[rowNumber, columnNumber].Value = item.Key;
                     foreach (var item2 in item.Value)
                     {
                         columnNumber++;
                         try
                         {
-                            _worksheet.Cells[rowNumber, columnNumber].Value = item2;
+                            cells[rowNumber, columnNumber].Value = item2;
                         }
                         catch { }
                     }
@@ -145,8 +139,7 @@ namespace Selenium
                 }
                 try
                 {
-                    _worksheet.Cells.AutoFitColumns(0, 75);
-                    _worksheet.Cells.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    AddStylesToWorkSheet(_worksheet);
                     package.Save();
                     var allTime = timeEnd.Subtract(timeStart).ToString("mm\\:ss");
                     MessageBox.Show($"Results were saved: {dictionaryOfResults.Count}\nTime spent: {allTime} minutes", "Successfully completed", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -159,6 +152,26 @@ namespace Selenium
                     package.SaveAs(path);
                     return path;
                 }
+            }
+        }
+
+        private void AddStylesToWorkSheet(ExcelWorksheet _worksheet)
+        {
+            string[] headers = { "Name", "Type of activity", "Phone", "Adress", "Website" };
+            int column = 1;
+            var cells = _worksheet.Cells;
+            cells.AutoFitColumns(0, 75);
+            cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            foreach (string item in headers)
+            {
+                var cell = cells[1, column];
+                cell.Value = item;
+                cell.Style.Font.Size = 15;
+                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.AliceBlue);
+                cell.Style.Font.Color.SetColor(System.Drawing.Color.DarkBlue);
+                cell.Style.Border.BorderAround(ExcelBorderStyle.Medium);
+                column++;
             }
         }
 

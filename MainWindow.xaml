@@ -14,9 +14,20 @@
         <Border BorderThickness="1" BorderBrush="Black">
             <Grid>
                 <Grid.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF3695FF"/>
-                        <GradientStop Color="#FF052386" Offset="1"/>
+                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0" MappingMode="RelativeToBoundingBox">
+                        <LinearGradientBrush.RelativeTransform>
+                            <TransformGroup>
+                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                <RotateTransform CenterX="0.5" CenterY="0.5" Angle="-135"/>
+                                <TranslateTransform Y="0" X="0"/>
+                            </TransformGroup>
+                        </LinearGradientBrush.RelativeTransform>
+                        <GradientStop Color="#FF2CBA68" Offset="0.71"/>
+                        <GradientStop Color="#FFFF6055" Offset="0.315"/>
+                        <GradientStop Color="#FFFFCB5F" Offset="1"/>
+                        <GradientStop Color="#FF2CBA68" Offset="0.315"/>
+                        <GradientStop Color="#FFFFCB5F" Offset="0.71"/>
                     </LinearGradientBrush>
                 </Grid.Background>
                 <Grid.RowDefinitions>
@@ -32,40 +43,40 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <TextBlock 
-                           Text="Дадай посилання для пошуку:" 
+                           Text="Please add a search link:" 
                            VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
+                           HorizontalAlignment="Center"
                            FontSize="25"
-                           FontFamily="Arial" Grid.ColumnSpan="4" Margin="78,0,0,0"/>
+                           FontFamily="Arial" Grid.ColumnSpan="4" Foreground="#FF2222B6"/>
                 <TextBlock Grid.Row="1" 
-                           Text="Обери шлях до файлу з результатами:" 
+                           Text="Set the path to the result file:" 
                            FontSize="16"
                            FontFamily="Arial"
                            VerticalAlignment="Top"
-                           HorizontalAlignment="Left" Grid.ColumnSpan="4" Margin="110,55,0,0" Grid.RowSpan="2"
+                           HorizontalAlignment="Center" Grid.ColumnSpan="4" Margin="0,55,0,0" Grid.RowSpan="2" Foreground="#FF2222B6"
                            />
                 <TextBlock Grid.Row="3" 
-                           Text="Обери швидкість пошуку:" 
+                           Text="Set search speed:" 
                            TextAlignment="Center"
                            FontWeight="Bold"
                            VerticalAlignment="Top"
                            FontSize="14"
                            FontFamily="Arial"
                            Margin="20,15,20,0"
-                           Foreground="White" Grid.Column="0" Grid.ColumnSpan="3"
+                           Foreground="#FF2222B6" Grid.Column="0" Grid.ColumnSpan="3"
                            />
-                <TextBox Name="linkValue" Background="#FFBDD5EA" Grid.Row="1" Height="27"
+                <TextBox Name="linkValue" Background="#FFB1DEFB" Grid.Row="1" Height="27"
                          Margin="20,0,20,0"
-                         VerticalAlignment ="Top" Grid.ColumnSpan="4">
+                         VerticalAlignment ="Top" Grid.ColumnSpan="4" Foreground="#FF2222B6" FontWeight="Bold">
                     <TextBox.Effect>
                         <DropShadowEffect/>
                     </TextBox.Effect>
                 </TextBox>
                 <TextBox Name="pathValue" 
                          DataContext="path"
-                         Background="#FFBDD5EA" Grid.Row="2" Height="27"
+                         Background="#FFB1DEFB" Grid.Row="2" Height="27"
                          VerticalAlignment="Bottom"
-                         Margin="20,0,65,55" Grid.ColumnSpan="3" Grid.RowSpan="2"
+                         Margin="20,0,65,55" Grid.ColumnSpan="3" Grid.RowSpan="2" Foreground="#FF2222B6" FontWeight="Bold"
                          >
                     <TextBox.Effect>
                         <DropShadowEffect/>
@@ -73,36 +84,36 @@
                 </TextBox>
 
 
-                <RadioButton x:Name="ScrollingDelay" Content="2 cекунди"
+                <RadioButton x:Name="ScrollingDelay" Content="2 seconds"
                              FontWeight="Bold"
                              VerticalContentAlignment="Center" 
                              HorizontalContentAlignment="Center"
                              Grid.Row="3"  Grid.Column="0"  
                              HorizontalAlignment="Left" VerticalAlignment="Bottom" 
-                             Margin="20,0,0,0"/>
-                <RadioButton x:Name="ScrollingDelay1" Content="1.5 cекунди"
+                             Margin="20,0,0,0" Foreground="#FF2222B6"/>
+                <RadioButton x:Name="ScrollingDelay1" Content="1.5 cseconds"
                              FontWeight="Bold"
                              VerticalContentAlignment="Center" 
                              HorizontalContentAlignment="Center"
                              Grid.Row="3" Grid.Column="1"  
                              HorizontalAlignment="Left" 
                              VerticalAlignment="Bottom" 
-                             Margin="47,0,0,0" Grid.ColumnSpan="2"/>
-                <RadioButton x:Name="ScrollingDelay2" Content="1 cекунда"
+                             Margin="47,0,0,0" Grid.ColumnSpan="2" Foreground="#FF2222B6"/>
+                <RadioButton x:Name="ScrollingDelay2" Content="1 cseconds"
                              FontWeight="Bold"
                              VerticalContentAlignment="Center" 
                              HorizontalContentAlignment="Center"
                              Grid.Row="3" Grid.Column="3"  
                              HorizontalAlignment="Right" 
                              VerticalAlignment="Bottom" 
-                             Margin="0,0,20,0" />
+                             Margin="0,0,20,0" Foreground="#FF2222B6" />
                 <Button x:Name="StartBrn" 
-                        Background="#FF3E5886"
-                        Foreground="White"
+                        Background="#FF3F9EDB"
+                        Foreground="#FF2222B6"
                         Grid.Row="4" 
                         VerticalAlignment="Bottom"
                         Height="40" 
-                        Content="Почати пошук🔍"
+                        Content="Start search🔍"
                         VerticalContentAlignment="Center"
                         FontSize="25"
                         Click="StartBrn_Click" BorderBrush="#FF121212" Margin="20,0,20,10" FontWeight="Bold" Cursor="Hand" Grid.ColumnSpan="4">
@@ -114,15 +125,15 @@
                     </Button.Effect>
                 </Button>
                 <Button x:Name="OpenDialog" 
-                    Background="#FF3E5886"
-                    Foreground="White"
+                    Background="#FF5EBBF7"
+                    Foreground="#FFE8C439"
                     Grid.Row="2" 
                     Grid.Column="2"
                     Content="🖿"
                     VerticalContentAlignment="Center"
                     FontSize="20"
                     Cursor="Hand"
-                    Click="OpenDialoSaveAsgBtn" BorderBrush="#FF121212" 
+                    Click="OpenDialoSavePathBtn" BorderBrush="#FF121212" 
                         Height="27" 
                         VerticalAlignment="Bottom"  HorizontalAlignment="Right" 
                         Margin="10,0,20,55" Width="30" 
