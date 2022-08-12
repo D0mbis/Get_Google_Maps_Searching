@@ -10,7 +10,7 @@ namespace Selenium
         public bool Available { get; private set; }
         public void CheckInput(string text, bool? isChecked1, bool? isChecked2, bool? isChecked3)
         {
-            Available = CheckingInputLink(text) &&
+            Available = CheckingInputLink(text);
             CheckingRadiobutton(isChecked1, isChecked2, isChecked3);
         }
         bool CheckingInputLink(string text)
@@ -22,7 +22,7 @@ namespace Selenium
             }
             else if (!text.Contains("www.google"))
             {
-                MessageBox.Show("Link must contain 'www.google.com/maps/' \nTry again.");
+                MessageBox.Show("Please, input link to search like «www.google.com/maps/» \nTry again.");
                 return false;
             }
             else if (text.Contains("www.google"))
@@ -50,12 +50,8 @@ namespace Selenium
                     ScrollingDelay = value2;
                     return true;
                 }
-                else
-                {
-                    MessageBox.Show("You need set speed searching.");
-                    return false;
-                }
             }
+            return false;
         }
         public void SaveAppConfig(string path)
         {

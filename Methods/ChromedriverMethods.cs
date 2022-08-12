@@ -11,10 +11,10 @@ namespace Selenium
     internal class ChromedriverMethods : IDisposable
     {
         readonly DateTime timeStart = DateTime.Now;
-        ReadOnlyCollection<IWebElement> ListOfWebElements { get; set; }
-        Dictionary<string, List<string>> DictionaryOfResults = new Dictionary<string, List<string>>();
         IWebDriver Driver { get; set; }
         IJavaScriptExecutor JsExecutor { get; set; }
+        ReadOnlyCollection<IWebElement> ListOfWebElements { get; set; }
+        Dictionary<string, List<string>> DictionaryOfResults = new Dictionary<string, List<string>>();
 
         void LaunchChromDriver(string link)
         {
@@ -27,6 +27,7 @@ namespace Selenium
                 //option.AddArgument("--headless");
                 Driver = new ChromeDriver(chromeDriverService, option) { Url = link };
                 //Driver.Manage().Window.Maximize();
+                JsExecutor = (IJavaScriptExecutor)Driver;
             }
             catch
             {
@@ -49,21 +50,11 @@ namespace Selenium
                         var nameOneRow = item.FindElement(By.XPath(".//div[@class='qBF1Pd fontHeadlineSmall']"));
                         var check = item.FindElement(By.XPath("//*[@class='DUwDvf fontHeadlineLarge']//span[text()]"));
                         if (nameOneRow.Text == check.Text)
-                        {
-                            bool avalible = item.FindElement(By.XPath("//*[@class='RcCsl fVHpi w4vB1d NOE9ve M0S7ae AG25L']/parent::div")).Enabled;
-                            if (avalible)
-                                return true;
-                            else
-                            {
-                                //close panel button
-                                try { item.FindElement(By.XPath("//*[contains(@class,'VfPpkd-icon-LgbsSe yHy1rc ')]")).Click(); } catch { }
-                                counter--;
-                                continue;
-                            }
-                        }
+                            return true;
                         else
                         {
                             counter--;
+                            delay += 200;
                         }
                     }
                 }
@@ -83,7 +74,7 @@ namespace Selenium
                 Thread.Sleep(200);
                 try
                 {
-                    return Driver.FindElements(locator);
+                    return Driver.FindElements(locator); // download packege chromedriver
                 }
                 catch
                 {
@@ -106,89 +97,56 @@ namespace Selenium
             {
                 contentOneRow.Add(" ");
             }
-            int swith = 0;
             foreach (var item in xPath)
             {
-                int counter = 2;
-                
-                if (swith == 0)
+                try
                 {
-                    while (counter != 0)
-                    {
-                        Thread.Sleep(100);
+                    var element = _item.FindElement(By.XPath(item));
+                    int _switch = 1, delay = 100;
+                    while (_switch < 20)
                         try
                         {
-                            var element = _item.FindElement(By.XPath(item));
-                            if (element.Enabled)
-                            {
-                                element.Click();
-                                if (Clipboard.ContainsText() == true)
-                                {
-                                    contentOneRow.Add(Clipboard.GetText().ToString());
-                                    Clipboard.Clear();
-                                    swith = 1;
-                                    break;
-                                }
-                                else contentOneRow.Add(""); break;
-                            }
-                            contentOneRow.Add(""); break;
+                            Thread.Sleep(delay);
+                            element.Click();
+                            contentOneRow.Add(Clipboard.GetText().ToString());
+                            Clipboard.Clear();
+                            break;
                         }
                         catch
                         {
-                            if (counter == 2)
+                            try
                             {
-                                try
+                                string path = "document.querySelector('.bJzME.Hu9e2e.tTVLSc *[class*=dS8AEf]')";
+                                if (_switch % 2 == 0)
                                 {
-                                    string path = "document.querySelector('.bJzME.Hu9e2e.tTVLSc *[class*=dS8AEf]')";
                                     JsExecutor.ExecuteScript($"{path}.scrollBy(0, 300);");
-                                    JsExecutor.ExecuteScript($"{path}.scrollBy(0, -300);");
+                                    _switch++;
+                                    delay += 200;
+                                    continue;
                                 }
-                                catch { }
-                                counter--;
-                                continue;
+                                else
+                                {
+                                    JsExecutor.ExecuteScript($"{path}.scrollBy(0, -300);");
+                                    _switch++;
+                                    delay += 200;
+                                }
                             }
-                            if (counter == 1)
-                            {
-                                contentOneRow.Add(" ");
-                                break;
-                            }
-                            counter--;
+                            catch { }
                             continue;
                         }
-                    }
                 }
-
-                //If at least one element was found
-                else
+                catch
                 {
-                    while (counter != 0)
-                    {
-                        Thread.Sleep(100);
-                        try
-                        {
-                            _item.FindElement(By.XPath(item)).Click();
-                            if (Clipboard.ContainsText() == true)
-                            {
-                                contentOneRow.Add(Clipboard.GetText().ToString());
-                                Clipboard.Clear();
-                                break;
-                            }
-                            else contentOneRow.Add(""); break;
-                        }
-                        catch
-                        {
-                            contentOneRow.Add(""); break;
-                        }
-                    }
+                    contentOneRow.Add("");
+                    continue;
                 }
             }
             return contentOneRow;
         }
 
-        public bool GetListOfWebElements(int scrollingDelay, string link)
+        public bool GetListOfWebElements(string link, int scrollingDelay)
         {
             LaunchChromDriver(link);
-            JsExecutor = (IJavaScriptExecutor)Driver;
             string path = "//*[@aria-label and contains(@class,'m6QErb DxyBCb kA9KIf')]//*[contains(@class,'Nv2PK ')]";
             string path2 = "document.querySelector('[aria-label].m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd')";
             while (true)
@@ -200,6 +158,7 @@ namespace Selenium
                     while (counter != 0)
                     {
                         JsExecutor.ExecuteScript($"{path2}.scrollBy(0, 5000);");
+                        if (scrollingDelay <= 0) { scrollingDelay = 2000; }
                         Thread.Sleep(scrollingDelay);
                         var ListAfterScrolling = Driver.FindElements(By.XPath(path));
 
