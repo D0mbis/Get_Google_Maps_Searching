@@ -19,10 +19,34 @@ namespace Selenium
             path = System.Configuration.ConfigurationManager.AppSettings["path"];
 
         }
-        void GetCorrectlyPath()
+        public void GetCorrectlyPath()
         {
             while (true)
             {
+                if (path.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+                {
+                    MessageBox.Show("File path contains ivalid char!\nTry again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    SaveAs();
+                    continue;
+                }
+                else if (string.IsNullOrEmpty(path))
+                {
+                    var result = MessageBox.Show("Please provide a path to save the file:", "Save results file", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                    if (result == MessageBoxResult.OK)
+                    {
+                        SaveAs();
+                        continue;
+                    }
+                    else
+                    {
+                        var result2 = MessageBox.Show($"Are you sure? \nPress \"Yes\" end results will be lost.", "Attention!", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (result2 == MessageBoxResult.Yes)
+                        {
+                            break;
+                        }
+                        else continue;
+                    }
+                }
                 if (File.Exists(path))
                 {
                     try
@@ -44,42 +68,13 @@ namespace Selenium
                         continue;
                     }
                 }
-                else if (string.IsNullOrEmpty(path))
-                {
-                    var result = MessageBox.Show("Please provide a path to save the file:", "Save results file", MessageBoxButton.OKCancel, MessageBoxImage.Information);
-                    if (result == MessageBoxResult.OK)
-                    {
-                        SaveAs();
-                        continue;
-                    }
-                    else
-                    {
-                        var result2 = MessageBox.Show($"Are you sure? \nPress \"Yes\" end results will be lost.", "Attention!", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        if (result2 == MessageBoxResult.Yes)
-                        {
-                            break;
-                        }
-                        else continue;
-                    }
-                }
                 else if (!File.Exists(path))
                 {
                     var result = MessageBox.Show($"File: {path} does not exist \nDo you want to create a new file?", "Warning!", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (result == MessageBoxResult.Yes)
                     {
-                        break;
-                    }
-                    else
-                    {
-                        SaveAs();
-                        continue;
-                    }
-                }
-                {
-                    var result = MessageBox.Show($"Do you want to save the results in: {path}?", "Attention!", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (result == MessageBoxResult.Yes && path != null)
-                    {
-                        break;
+                        using (FileStream stream = new FileStream(path, FileMode.Create))
+                            break;
                     }
                     else
                     {
@@ -155,24 +150,23 @@ namespace Selenium
             }
         }
 
-        private void AddStylesToWorkSheet(ExcelWorksheet _worksheet)
+        public void AddStylesToWorkSheet(ExcelWorksheet _worksheet)
         {
-            string[] headers = { "Name", "Type of activity", "Phone", "Adress", "Website" };
-            int column = 1;
-            var cells = _worksheet.Cells;
-            cells.AutoFitColumns(0, 75);
-            cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            foreach (string item in headers)
-            {
-                var cell = cells[1, column];
-                cell.Value = item;
-                cell.Style.Font.Size = 15;
-                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.AliceBlue);
-                cell.Style.Font.Color.SetColor(System.Drawing.Color.DarkBlue);
-                cell.Style.Border.BorderAround(ExcelBorderStyle.Medium);
-                column++;
-            }
+                string[] headers = { "Name", "Type of activity", "Phone", "Adress", "Website" };
+                int column = 1;
+                foreach (string item in headers)
+                {
+                    var cell = _worksheet.Cells[1, column];
+                    cell.Value = item;
+                    cell.Style.Font.Size = 15;
+                    cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.AliceBlue);
+                    cell.Style.Font.Color.SetColor(System.Drawing.Color.DarkBlue);
+                    cell.Style.Border.BorderAround(ExcelBorderStyle.Medium);
+                    column++;
+                }
+                _worksheet.Cells.AutoFitColumns(0,75);
+                _worksheet.Cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
         }
 
         public void Dispose()
