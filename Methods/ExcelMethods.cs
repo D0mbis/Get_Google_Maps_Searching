@@ -112,6 +112,7 @@ namespace Selenium
         {
             var timeEnd = DateTime.Now;
             GetCorrectlyPath();
+            using (CheckUserInput check = new CheckUserInput()) { check.SaveAppConfig(path); }
             using (ExcelPackage package = new ExcelPackage(path))
             {
                 var _worksheet = package.Workbook.Worksheets.Add("Results");

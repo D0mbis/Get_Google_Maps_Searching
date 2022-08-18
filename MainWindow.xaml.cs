@@ -1,42 +1,43 @@
-﻿using System.Diagnostics;
+﻿using GetSearching_GM;
+using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 
 namespace Selenium
 {
     public partial class MainWindow : Window
     {
+        private Progress Progress;
         public MainWindow()
         {
             InitializeComponent();
             pathValue.Text = System.Configuration.ConfigurationManager.AppSettings["path"];
             linkValue.Text = System.Configuration.ConfigurationManager.AppSettings["link"];
-            /*using (ExcelMethods excel = new ExcelMethods())
-            {
-                excel.AddStylesToWorkSheet();
-            }*/
         }
 
         private void StartBrn_Click(object sender, RoutedEventArgs e)
         {
-            // checking user input
-            StartBtn.Content = "Wait, search in progress";
-            StartBtn.Foreground = System.Windows.Media.Brushes.Red;
-            using (CheckUserInput userInput = new CheckUserInput())
+            if (Progress == null)
             {
-                userInput.CheckInput(linkValue.Text, ScrollingDelay.IsChecked,
-                                     ScrollingDelay1.IsChecked, ScrollingDelay2.IsChecked);
-                if (userInput.Available)
-                    using (ChromedriverMethods session = new ChromedriverMethods())
-                    {
-                        if (session.GetListOfWebElements(linkValue.Text, userInput.ScrollingDelay))
+                using (CheckUserInput userInput = new CheckUserInput())
+                {
+                    userInput.CheckInput(linkValue.Text, ScrollingDelay.IsChecked,
+                                         ScrollingDelay1.IsChecked, ScrollingDelay2.IsChecked);
+                    if (userInput.Available)
+                        using (ChromedriverMethods session = new ChromedriverMethods())
                         {
-                            pathValue.Text = session.SaveResultsInExcel();
+                            session.GetListOfWebElements(linkValue.Text, userInput.ScrollingDelay);
+                            Thread thread = new Thread(session.PutInDictionary);
+                            thread.SetApartmentState(ApartmentState.STA);
+                            Progress progress = session;
+                            thread.Start();
+                            Progress = progress;
+                            progress.Show();
                         }
-                    }
-                userInput.SaveAppConfig(pathValue.Text);
+                }
+                pathValue.Text = System.Configuration.ConfigurationManager.AppSettings["path"];
             }
-            StartBtn.Content = "Start search 🔍";
-            StartBtn.Foreground = System.Windows.Media.Brushes.White;
+            else { Progress.Activate(); }
         }
 
         private void OpenDialoSavePathBtn(object sender, RoutedEventArgs e)

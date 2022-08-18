@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using GetSearching_GM;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,13 @@ using System.Windows;
 
 namespace Selenium
 {
-    internal class ChromedriverMethods : IDisposable
+    internal class ChromedriverMethods : Progress, IDisposable
     {
         readonly DateTime timeStart = DateTime.Now;
         IWebDriver Driver { get; set; }
         IJavaScriptExecutor JsExecutor { get; set; }
         ReadOnlyCollection<IWebElement> ListOfWebElements { get; set; }
-        Dictionary<string, List<string>> DictionaryOfResults = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> DictionaryOfResults = new Dictionary<string, List<string>>();
 
         void LaunchChromDriver(string link)
         {
@@ -144,7 +145,7 @@ namespace Selenium
             return contentOneRow;
         }
 
-        public bool GetListOfWebElements(string link, int scrollingDelay)
+        public void GetListOfWebElements(string link, int scrollingDelay)
         {
             LaunchChromDriver(link);
             string path = "//*[@aria-label and contains(@class,'m6QErb DxyBCb kA9KIf')]//*[contains(@class,'Nv2PK ')]";
@@ -194,17 +195,22 @@ namespace Selenium
                     break;
                 }
             }
-            return PutInDictionary();
+            // return PutInDictionary();
         }
-        bool PutInDictionary()
+        public void PutInDictionary()
         {
+            this.Dispatcher.Invoke(() =>
+            {
+                TextBlock.Text = $"Was found {ListOfWebElements.Count} companies.";
+                ProgressBar.Maximum = ListOfWebElements.Count;
+            });
+
             if (ListOfWebElements.Count == 0)
             {
-                var result = MessageBox.Show("Information not found, please try another search link.", "Bad link", MessageBoxButton.OKCancel, MessageBoxImage.Error);
-                if (result == MessageBoxResult.Yes)
+                var result = MessageBox.Show("Information not found, please try another search link.", "Bad link", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (result == MessageBoxResult.OK)
                 {
                     Driver.Quit();
-                    return false;
                 }
             }
             List<string> listOfCopyes = new List<string>();
@@ -221,6 +227,12 @@ namespace Selenium
                             if (!DictionaryOfResults.ContainsKey(nameOneRow.Text))
                             {
                                 DictionaryOfResults[nameOneRow.Text] = WaitForCopyButtonEnabled(item);
+                                this.Dispatcher.Invoke(() =>
+                                {
+                                    ProgressBar.Value += 1;
+                                    TextBlock1.Text = $"Copied {ListOfWebElements.IndexOf(item) + 1} of " +
+                                                               $"{ListOfWebElements.Count}";
+                                });
                             }
                             else
                             {
@@ -234,6 +246,12 @@ namespace Selenium
                                     else
                                     {
                                         DictionaryOfResults[copy] = WaitForCopyButtonEnabled(item);
+                                        this.Dispatcher.Invoke(() =>
+                                         {
+                                             ProgressBar.Value += 1;
+                                             TextBlock1.Text = $"Copied {ListOfWebElements.IndexOf(item)} of " +
+                                                               $"{ProgressBar.Maximum}";
+                                         });
                                         listOfCopyes.Add(copy);
                                         break;
                                     }
@@ -252,19 +270,23 @@ namespace Selenium
                 }
             }
             ListOfWebElements = null;
+            
             try
             {
                 Driver.Quit();
-                return true;
+                SaveResultsInExcel();
             }
             catch
             {
                 MessageBox.Show("Chromedriver did`t finished work successfully", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                return true;
             }
         }
         public string SaveResultsInExcel()
         {
+            this.Dispatcher.Invoke(() =>
+            {
+                Close();
+            });
             while (true)
                 try
                 {
