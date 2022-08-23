@@ -84,7 +84,9 @@
                 
                 <TextBox Name="linkValue" Background="#FFB1DEFB" Grid.Row="1" Height="27"
                          Margin="20,0,20,0"
-                         VerticalAlignment ="Top" Grid.ColumnSpan="4" Foreground="#FF2222B6" FontWeight="Bold" Tag="">
+                         VerticalAlignment ="Top" Grid.ColumnSpan="4" Foreground="#FF2222B6"
+                         FontWeight="Bold" Tag=""
+                         TextChanged="linkValue_TextChanged">
                     <TextBox.Effect>
                         <DropShadowEffect/>
                     </TextBox.Effect>

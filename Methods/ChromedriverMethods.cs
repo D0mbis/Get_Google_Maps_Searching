@@ -105,6 +105,7 @@ namespace Selenium
                     var element = _item.FindElement(By.XPath(item));
                     int _switch = 1, delay = 100;
                     while (_switch < 20)
+                    {
                         try
                         {
                             Thread.Sleep(delay);
@@ -135,6 +136,8 @@ namespace Selenium
                             catch { }
                             continue;
                         }
+                    }
+                    if(_switch >= 20) { contentOneRow.Add(""); }
                 }
                 catch
                 {
@@ -270,7 +273,7 @@ namespace Selenium
                 }
             }
             ListOfWebElements = null;
-            
+            MainWindow.Progress = null;
             try
             {
                 Driver.Quit();

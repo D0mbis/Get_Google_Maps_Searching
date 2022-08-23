@@ -7,7 +7,7 @@ namespace Selenium
 {
     public partial class MainWindow : Window
     {
-        private Progress Progress;
+        public static Progress Progress { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -35,7 +35,7 @@ namespace Selenium
                             progress.Show();
                         }
                 }
-                pathValue.Text = System.Configuration.ConfigurationManager.AppSettings["path"];
+                //pathValue.Text = System.Configuration.ConfigurationManager.AppSettings["path"];
             }
             else { Progress.Activate(); }
         }
@@ -47,6 +47,11 @@ namespace Selenium
             // reload App from update AppConfig
             Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
+        }
+
+        private void linkValue_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            Progress = null;
         }
     }
 }
